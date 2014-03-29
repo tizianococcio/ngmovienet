@@ -1,0 +1,56 @@
+<h1>{{ ctrl.movie.titolo }}</h1> <a href='/ng-app/movie/edit/{{ ctrl.movie.id }}'>Modifica</a>
+
+<div class="row">
+	<div class="col-md-9">
+		<table class="table">
+
+			<tr>
+				<th>Supporto</th>
+				<td>{{ ctrl.movie.posizione }}</span></td>
+			</tr>
+
+			<tr>
+				<th>Titolo</th>
+				<td>{{ ctrl.movie.titolo }}</td>
+			</tr>
+
+			<tr ng-show="ctrl.movie.sotto_titolo">
+				<th>Sotto titolo</th>
+				<td>{{ ctrl.movie.sotto_titolo }}</td>
+			</tr>
+						
+			<tr>
+				<th>Regista</th>
+				<td>{{ ctrl.movie.regista }}</td>
+			</tr>
+			
+			<tr>
+				<th>Genere</th>
+				<td>{{ ctrl.movie.genere }}</td>
+			</tr>
+
+			<tr ng-show="ctrl.movie.cast">
+				<th>Cast</th>
+				<td>{{ ctrl.movie.cast }}</td>
+			</tr>
+
+			<tr ng-show="ctrl.movie.data_uscita">
+				<th>Data uscita</th>
+				<td>{{ ctrl.movie.data_uscita | date:'yyyy' }}</td>
+			</tr>
+
+			<tr ng-show="ctrl.movie.trama">
+				<th>Trama</th>
+				<td>{{ ctrl.movie.trama }}</td>
+			</tr>
+
+			<tr ng-show="ctrl.movie.durata">
+				<th>Durata</th>
+				<td>{{ ctrl.movie.durata }}</td>
+			</tr>	
+		</table>
+	</div>
+	<div class="col-md-3">
+		<img src="{{ ctrl.movie.locandina }}" class="img-responsive" ng-show="ctrl.movie.locandina">
+	</div>
+</div>

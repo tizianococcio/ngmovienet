@@ -1,0 +1,15 @@
+<h1>Test page</h1>
+
+<div class='container'>
+	Filter: <input type='text' ng-model='name' /> Filtering data containing: <b>{{ name }}</b>
+</div>
+
+<div class='container'>
+	<ul>
+		<li ng-repeat='name in ctrl.names | filter:name | orderBy:"city"'>{{ name.name }} - {{ name.city }}</li>
+	</ul>
+	
+	<label>Customer name <input type="text" ng-model="ctrl.newCustomer.name" /></label>
+	<label>Customer city <input type="text" ng-model="ctrl.newCustomer.city" /></label>
+	<button ng-click="ctrl.addCustomer()">Add customer</button>
+</div>
