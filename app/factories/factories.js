@@ -13,17 +13,16 @@ app.factory('simpleFactory', function() {
 
 app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 
-	console.log(conf.root);
 	var factory = {};
 	
 	// Tutti i film
 	factory.getMovies = function() {
-		return $http.get(conf.root + 'lista.php');
+		return $http.get(conf.root + 'ws/film');
 	};
 	
 	// Un film
 	factory.getMovie = function(id) {
-		return $http.get(conf.root + 'dettaglio.php?id=' + id);
+		return $http.get(conf.root + 'ws/film/' + id);
 	};
 	
 	// Salva un film

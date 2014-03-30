@@ -5,8 +5,9 @@
 
 		var app = angular.module('movieNetApp', ['ngRoute', 'ui.bootstrap', 'configuration']);
 		
-		app.config(function($routeProvider, $locationProvider){
-			var baseFolder = '/ngMovieNet';
+		app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($routeProvider, $locationProvider, conf){
+
+			var baseFolder = conf.root;
 			$routeProvider
 				.when('/test',
 				{
@@ -45,4 +46,4 @@
 					controllerAs: 'ctrl'
 				})				
 				.otherwise({ redirectTo: '/' });
-		});
+		}]);
