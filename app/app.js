@@ -1,7 +1,4 @@
-		angular.module('configuration', [])
-		       .constant('CONFIGURATION', {
-		       		root: '/ngMovieNet/'
-		       	});
+
 
 		var app = angular.module('movieNetApp', ['ngRoute', 'ui.bootstrap', 'configuration']);
 		
