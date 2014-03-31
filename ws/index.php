@@ -3,7 +3,13 @@ include ('slim_boot.php');
 
 include ('../db/Database.php');
 
+define ('APP_ROOT', '/ngMovieNet/');
+
+include ($_SERVER['DOCUMENT_ROOT'] . APP_ROOT . 'ws/Film.php');
+
 $app->db = Database::Load();
+
+$app->cFilm = new Film($app->db);
 
 /**
  * Azione per pagine non trovate
@@ -119,6 +125,56 @@ $app->get('/registi', function () use ($app) {
 	
 	echo json_encode($data);
 });
+
+// Aggiorna film
+$app->put('/film/:id', function($id) use ($app) {
+
+	$film = json_decode($app->request()->getBody(), true);
+
+	
+	
+
+	// generi
+	$id_genere = $app->cFilm->salvaGenere($film['genere']);
+	//$id_genere = 0;
+
+
+	// registi
+	$id_regista = $app->cFilm->salvaRegista($film['regista']);
+	//$id_regista = 0;
+
+	$q = "UPDATE `movie`
+			SET
+			`titolo` = :titolo,
+			`sottotitolo` = :sottotitolo,
+			`supporto` = :supporto,
+			`tipo_supporto` = :tipo_supporto,
+			`data_uscita` = :data_uscita,
+			`cast` = :cast,
+			`trama` = :trama,
+			`durata` = :durata,
+			`locandina` = :locandina,
+			`id_genere` = :id_genere,
+			`id_regista` = :id_regista
+			WHERE `id` = :id;
+			";
+	$st = $app->db->prepare($q);
+	$st->bindValue(':titolo', $film['titolo'], PDO::PARAM_STR);
+	$st->bindValue(':sottotitolo', $film['sotto_titolo'], PDO::PARAM_STR);
+	$st->bindValue(':supporto', $film['posizione'], PDO::PARAM_STR);
+	$st->bindValue(':tipo_supporto', $film['tipo_supporto'], PDO::PARAM_STR);
+	$st->bindValue(':data_uscita', $film['data_uscita'], PDO::PARAM_STR);
+	$st->bindValue(':cast', $film['cast'], PDO::PARAM_STR);
+	$st->bindValue(':trama', $film['trama'], PDO::PARAM_STR);
+	$st->bindValue(':durata', $film['durata'], PDO::PARAM_STR);
+	$st->bindValue(':locandina', $film['locandina'], PDO::PARAM_STR);
+	$st->bindValue(':id_genere', $id_genere, PDO::PARAM_STR);
+	$st->bindValue(':id_regista', $id_regista, PDO::PARAM_STR);
+	$st->bindValue(':id', $film['id'], PDO::PARAM_STR);
+	$st->execute();
+
+});
+
 
 
 $app->run();

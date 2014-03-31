@@ -29,6 +29,12 @@ app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 	factory.setMovie = function(movie) {
 		return $http.post(conf.root + 'salva.php', movie);
 	};
+
+	// Aggiorna un film
+	factory.updateMovie = function(movie) {
+		console.log(movie.id);
+		return $http.put(conf.root + 'ws/film/' + movie.id, movie);
+	};
 	
 	// Registi
 	factory.getRegisti = function(val) 

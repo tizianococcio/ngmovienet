@@ -42,28 +42,6 @@ controllers.homeController = function (){
 
 };
 
-controllers.detailsMovieController = function ($routeParams, movieFactory) {
-
-	var _this = this;
-
-	_this.movie = {};
-
-	init();
-
-	function init() {
-	
-		function handleSuccess(data, status) {
-			_this.movie = data;
-		}
-
-		//Grab customerID off of the route        
-		var movieId = ($routeParams.id) ? parseInt($routeParams.id) : 0;
-		if (movieId > 0) {
-			_this.movie = movieFactory.getMovie(movieId).success(handleSuccess);
-		}
-	}		
-}
-
 controllers.movieController = function (movieFactory) {
 
 	var _this = this;
@@ -82,6 +60,63 @@ controllers.movieController = function (movieFactory) {
 	
 	movieFactory.getMovies().success(handleSuccess);
 	
+}
+
+controllers.detailsMovieController = function ($routeParams, movieFactory) {
+
+	var _this = this;
+
+	_this.movie = {};
+
+	init();
+
+	function init() {
+
+		_this.getRegisti = function(val) {
+			return movieFactory.getRegisti(val);
+		};
+		
+		_this.getGeneri = function(val) {
+			return movieFactory.getGeneri(val);	
+		};		
+	
+		function handleSuccess(data, status) {
+			_this.movie = data;
+		}
+
+		//Grab customerID off of the route        
+		var movieId = ($routeParams.id) ? parseInt($routeParams.id) : 0;
+		if (movieId > 0) {
+			_this.movie = movieFactory.getMovie(movieId).success(handleSuccess);
+		}
+		
+		_this.movie.data = new Date(_this.movie.data)
+
+		// Datepicker stuff
+
+		// Disable weekend selection
+		_this.disabled = function(date, mode) {
+		  return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+		};
+		
+		_this.open = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+			
+			_this.opened = true;
+		};
+		
+		_this.dateOptions = {
+			'year-format': "'yy'",
+			'starting-day': 1,
+			'show-button-bar' : false,
+		};		
+	}
+
+	_this.salva = function() {
+		_this.movie.data = new Date(_this.movie.data).yyyymmdd();
+		movieFactory.updateMovie(_this.movie);
+	};
 }
 
 controllers.newMovieController = function (movieFactory, $http) {
