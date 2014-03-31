@@ -6,7 +6,7 @@
   <div class="form-group">
     <label for="inputTitolo" class="col-sm-2 control-label">Titolo</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputTitolo" name="titolo" ng-model="movie.titolo" placeholder="Titolo" required>
+      <input type="text" class="form-control" id="inputTitolo" name="titolo" ng-model="ctrl.movie.titolo" placeholder="Titolo" required>
     </div>
    <div class="error" ng-show="nuovofilm_form.titolo.$dirty && nuovofilm_form.titolo.$invalid">    
 		<small class="error" ng-show="nuovofilm_form.titolo.$error.required">
@@ -18,55 +18,53 @@
   <div class="form-group">
     <label for="inputSottoTitolo" class="col-sm-2 control-label">Sotto Titolo</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputSottoTitolo" name="sottotitolo" ng-model="movie.sottotitolo" placeholder="Sotto Titolo">
+      <input type="text" class="form-control" id="inputSottoTitolo" name="sottotitolo" ng-model="ctrl.movie.sottotitolo" placeholder="Sotto Titolo">
     </div>
   </div>
   
   <div class="form-group">
     <label for="inputTitoloOriginale" class="col-sm-2 control-label">Titolo originale</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputTitoloOriginale" name="titolo_originale" ng-model="movie.titolo_originale" placeholder="Titolo Originale">
+      <input type="text" class="form-control" id="inputTitoloOriginale" name="titolo_originale" ng-model="ctrl.movie.titolo_originale" placeholder="Titolo Originale">
     </div>
   </div>
   
   <div class="form-group">
     <label for="inputLingua" class="col-sm-2 control-label">Lingua</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputLingua" name="lingua" ng-model="movie.lingua" placeholder="Lingua">
+      <input type="text" class="form-control" id="inputLingua" name="lingua" ng-model="ctrl.movie.lingua" placeholder="Lingua">
     </div>
   </div>
 
   <div class="form-group">
     <label for="inputSupporto" class="col-sm-2 control-label">Supporto</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputSupporto" ng-model="movie.supporto" placeholder="Supporto" required>
+      <input type="text" class="form-control" id="inputSupporto" ng-model="ctrl.movie.posizione" placeholder="Supporto" required>
     </div>
   </div>
   
   <div class="form-group">
     <label for="inputGenere" class="col-sm-2 control-label">Genere</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputGenere" ng-model="movie.genere" placeholder="Genere"
-      	typeahead="genere as genere.nome for genere in getGeneri($viewValue) | limitTo:8 | filter:$viewValue"
-      	typeahead-wait-ms="500" required>
+      <input type="text" class="form-control" id="inputGenere" ng-model="ctrl.movie.genere" placeholder="Genere"
+        typeahead="genere as genere.nome for genere in ctrl.getGeneri($viewValue) | limitTo:8 | filter:$viewValue"
+        typeahead-wait-ms="500" required>
     </div>
   </div>
   
   <div class="form-group">
     <label for="inputRegia" class="col-sm-2 control-label">Regia</label>
     <div class="col-sm-10">
-		<input type="text" ng-model="movie.regista" id="inputRegia"
-			placeholder="Regia" 
-			typeahead="regista as regista.nome for regista in getRegisti($viewValue) | limitTo:8 | filter:$viewValue" 
-			typeahead-loading="loadingLocations" class="form-control"
-			typeahead-wait-ms="500" required>
+    <input type="text" class="form-control" id="inputRegia" ng-model="ctrl.movie.regista" placeholder="Regia" 
+      typeahead="regista as regista.nome for regista in ctrl.getRegisti($viewValue) | limitTo:8 | filter:$viewValue" 
+      typeahead-wait-ms="500" required>
     </div>
   </div>
   
   <div class="form-group">
     <label for="inputDurata" class="col-sm-2 control-label">Durata</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputDurata" ng-model="movie.durata" placeholder="Durata" ngMaxlength=8>
+      <input type="text" class="form-control" id="inputDurata" ng-model="ctrl.movie.durata" placeholder="Durata" ngMaxlength=8>
     </div>
   </div>
     
@@ -75,12 +73,12 @@
     <!--http://angular-ui.github.io/bootstrap/#/datepicker-->
     <p class="input-group">
       <input type="text" class="form-control" 
-      	datepicker-popup="dd-MMMM-yyyy" ng-model="movie.data" 
-      	is-open="opened" min="'1800-01-01'" max="'2015-06-22'" 
-      	datepicker-options="dateOptions" date-disabled="disabled(date, mode)" 
-      	ng-required="true" close-text="Close" show-weeks="false" />
+        datepicker-popup="dd-MMMM-yyyy" ng-model="ctrl.movie.data" 
+        is-open="ctrl.opened" min="'1800-01-01'" max="'2015-06-22'" 
+        datepicker-options="ctrl.dateOptions" date-disabled="ctrl.disabled(date, mode)" 
+        ng-required="true" close-text="Close" show-weeks="false" />
       <span class="input-group-btn">
-        <button class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+        <button class="btn btn-default" ng-click="ctrl.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
       </span>
     </p>
   </div>
@@ -88,20 +86,20 @@
   <div class="form-group">
     <label for="inputCast" class="col-sm-2 control-label">Cast</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputCast" ng-model="movie.cast" placeholder="Cast" ngMaxlength=2048>
+      <input type="text" class="form-control" id="inputCast" ng-model="ctrl.movie.cast" placeholder="Cast" ngMaxlength=2048>
     </div>
   </div>
 
   <div class="form-group">
     <label for="inputTrama" class="col-sm-2 control-label">Trama</label>
     <div class="col-sm-10">
-      <textarea class="form-control" id="inputTrama" ng-model="movie.trama" placeholder="Trama" ngMaxlength=5012></textarea>
+      <textarea class="form-control" id="inputTrama" ng-model="ctrl.movie.trama" placeholder="Trama" ngMaxlength=5012></textarea>
     </div>
   </div>
   
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default" ng-click="salva()">Salva</button>
+      <button type="submit" class="btn btn-default" ng-click="ctrl.salva()">Salva</button>
     </div>
   </div>
 
