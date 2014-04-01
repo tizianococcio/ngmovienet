@@ -115,7 +115,19 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 
 	_this.salva = function() {
 		_this.movie.data = new Date(_this.movie.data).yyyymmdd();
-		movieFactory.updateMovie(_this.movie);
+		movieFactory.updateMovie(_this.movie).success(function(data) {
+			console.log(data);
+			if (data.status === 'ok')
+			{
+				_this.messaggio = 'Modifiche salvate.';
+				_this.submitStatus = true;
+			}
+			else
+			{
+				_this.messaggio = 'Errore salvataggio.';
+				_this.submitStatus = false;
+			}
+		});
 	};
 }
 

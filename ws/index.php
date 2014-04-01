@@ -153,7 +153,6 @@ $app->put('/film/:id', function($id) use ($app) {
 			`cast` = :cast,
 			`trama` = :trama,
 			`durata` = :durata,
-			`locandina` = :locandina,
 			`id_genere` = :id_genere,
 			`id_regista` = :id_regista
 			WHERE `id` = :id;
@@ -167,11 +166,15 @@ $app->put('/film/:id', function($id) use ($app) {
 	$st->bindValue(':cast', $film['cast'], PDO::PARAM_STR);
 	$st->bindValue(':trama', $film['trama'], PDO::PARAM_STR);
 	$st->bindValue(':durata', $film['durata'], PDO::PARAM_STR);
-	$st->bindValue(':locandina', $film['locandina'], PDO::PARAM_STR);
+	//$st->bindValue(':locandina', $film['locandina'], PDO::PARAM_STR);
 	$st->bindValue(':id_genere', $id_genere, PDO::PARAM_STR);
 	$st->bindValue(':id_regista', $id_regista, PDO::PARAM_STR);
 	$st->bindValue(':id', $film['id'], PDO::PARAM_STR);
 	$st->execute();
+
+	$output = array('status' => 'ok');
+
+	echo json_encode($output);
 
 });
 

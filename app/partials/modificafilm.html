@@ -1,6 +1,6 @@
 <h1>Modifica Film</h1>
-
-<p class="bg-success alert" ng-show="submitStatus">{{ messaggio }}</p>
+<a href="#/movie/{{ ctrl.movie.id }}">Indietro</a>
+<p class="bg-success alert" ng-show="ctrl.submitStatus">{{ ctrl.messaggio }}</p>
 
 <form class="form-horizontal" role="form" novalidate name="nuovofilm_form">
   <div class="form-group">

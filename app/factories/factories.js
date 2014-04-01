@@ -32,7 +32,6 @@ app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 
 	// Aggiorna un film
 	factory.updateMovie = function(movie) {
-		console.log(movie.id);
 		return $http.put(conf.root + 'ws/film/' + movie.id, movie);
 	};
 	
