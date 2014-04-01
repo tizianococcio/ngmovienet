@@ -27,7 +27,7 @@ app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 	
 	// Salva un film
 	factory.setMovie = function(movie) {
-		return $http.post(conf.root + 'salva.php', movie);
+		return $http.post(conf.root + 'ws/film', movie);
 	};
 
 	// Aggiorna un film

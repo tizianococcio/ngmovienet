@@ -126,13 +126,76 @@ $app->get('/registi', function () use ($app) {
 	echo json_encode($data);
 });
 
+// inserisce un film
+$app->post('/film', function() use ($app) {
+	$tabella = "movie";
+	$film = json_decode($app->request()->getBody(), true);
+	$id_genere = $id_regista = 0;
+
+	// generi
+	if (isset($film['genere']) && !empty($film['genere'])) 
+	{
+		// Se $film['genere'] è un array si tratta di un genere già presente nel db
+		if (is_array($film['genere']))
+		{
+			$id_genere = $film['genere']['id'];
+		}
+		else
+		{
+			$id_genere = $app->cFilm->salvaGenere($film['genere']);
+		}
+	}
+	
+	// registi
+	if (isset($film['regista']) && !empty($film['regista']))
+	{
+		// Se $film['regista'] è un array si tratta di un regista già presente nel db
+		if (is_array($film['regista']))
+		{
+			$id_regista = $film['regista']['id'];
+		}
+		else
+		{
+			$id_regista = $app->cFilm->salvaRegista($film['regista']);
+		}
+	}
+
+	// Inserimento database
+	$q = "INSERT INTO {$tabella} 
+			(titolo, sottotitolo, titolo_originale, id_genere, id_regista, supporto, data_uscita, cast, trama, durata) 
+		  VALUES 
+		  	(:titolo, :sottotitolo, :titolo_originale, :genere, :regista, :supporto, :data_uscita, :cast, :trama, :durata)";
+	$st = $app->db->prepare($q);
+	$st->bindValue(":titolo", $film['titolo'], PDO::PARAM_STR);
+	$st->bindValue(":sottotitolo", $film['sottotitolo'], PDO::PARAM_STR);
+	$st->bindValue(":titolo_originale", $film['titolo_originale'], PDO::PARAM_STR);
+	$st->bindValue(":genere", $id_genere, PDO::PARAM_INT);
+	$st->bindValue(":regista", $id_regista, PDO::PARAM_INT);
+	$st->bindValue(":supporto", $film['posizione'], PDO::PARAM_STR);
+	$st->bindValue(":data_uscita", $film['data'], PDO::PARAM_STR);
+	$st->bindValue(":cast", $film['cast'], PDO::PARAM_STR);
+	$st->bindValue(":trama", $film['trama'], PDO::PARAM_STR);
+	$st->bindValue(":durata", $film['durata'], PDO::PARAM_STR);
+	$st->execute();
+
+	$output = array();
+	if ($st->rowCount() > 0)
+	{
+		$id = $app->db->lastInsertId();
+		$output = array('status' => 'ok', 'id' => $id);
+	} else {
+		$output = array('status' => 'error', 'id' => -1);
+	}
+
+	echo json_encode($output);
+
+
+});
+
 // Aggiorna film
 $app->put('/film/:id', function($id) use ($app) {
 
 	$film = json_decode($app->request()->getBody(), true);
-
-	
-	
 
 	// generi
 	$id_genere = $app->cFilm->salvaGenere($film['genere']);

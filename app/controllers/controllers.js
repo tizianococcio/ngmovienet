@@ -116,7 +116,6 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 	_this.salva = function() {
 		_this.movie.data = new Date(_this.movie.data).yyyymmdd();
 		movieFactory.updateMovie(_this.movie).success(function(data) {
-			console.log(data);
 			if (data.status === 'ok')
 			{
 				_this.messaggio = 'Modifiche salvate.';
@@ -170,7 +169,6 @@ controllers.newMovieController = function (movieFactory, $http) {
 	
 	}
 	_this.salva = function() {
-		//alert('nuovo');
 		
 		_this.movie.data = new Date(_this.movie.data).yyyymmdd();
 		movieFactory
@@ -187,9 +185,7 @@ controllers.newMovieController = function (movieFactory, $http) {
 					_this.messaggio = 'Ah! Errore!';	
 					_this.submitStatus = false;
 				}
-				console.log(data);
 			});
-		//console.log(_this.movie);
 	} 
 }
 
