@@ -84,7 +84,7 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 			_this.movie = data;
 		}
 
-		//Grab customerID off of the route        
+		//Grab movieID off of the route        
 		var movieId = ($routeParams.id) ? parseInt($routeParams.id) : 0;
 		if (movieId > 0) {
 			_this.movie = movieFactory.getMovie(movieId).success(handleSuccess);
