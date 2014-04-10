@@ -1,6 +1,7 @@
 
 
-		var app = angular.module('movieNetApp', ['ngRoute', 'ui.bootstrap', 'configuration']);
+		var app = angular.module('movieNetApp', 
+			['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload']);
 		
 		app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($routeProvider, $locationProvider, conf){
 

@@ -8,23 +8,25 @@
 var controllers = {};
 
 // Used for testing
-controllers.testController = function (simpleFactory){
+controllers.testController = function ($fileUploader, $scope){
 	var _this = this;
-
-	_this.names = [];
 	
 	init();
 	
 	function init() {	
-		_this.names = simpleFactory.getCustomers();
+        // create a uploader with options
+        var uploader = $scope.uploader = $fileUploader.create({
+            scope: $scope,                          // to automatically update the html. Default: $rootScope
+            url: '/ngMovieNet/ws/upload/locandina'
+            //url: '/ngMovieNet/upload.php'
+        });
+
+        // REGISTER UPLOADER HANDLERS
+        uploader.bind('afteraddingfile', function (event, item) {
+            console.info('After adding a file', item);
+        });    
 	}
-	
-	_this.addCustomer = function() {
-		_this.names.push({
-			name: this.newCustomer.name, 
-			city: this.newCustomer.city
-		});
-	}
+
 };
 
 // Home page controller
@@ -130,7 +132,7 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 	};
 }
 
-controllers.newMovieController = function (movieFactory, $http) {
+controllers.newMovieController = function (movieFactory, $fileUploader, $scope) {
 
 	var _this = this;
 
@@ -138,6 +140,17 @@ controllers.newMovieController = function (movieFactory, $http) {
 	
 	function init()
 	{
+
+        // create a uploader with options
+        var uploader = $scope.uploader = $fileUploader.create({
+            scope: $scope,                          // to automatically update the html. Default: $rootScope
+            url: 'upload.php'
+        });
+
+        // REGISTER UPLOADER HANDLERS
+        uploader.bind('afteraddingfile', function (event, item) {
+            console.info('After adding a file', item);
+        });        
 
 		_this.getRegisti = function(val) {
 			return movieFactory.getRegisti(val);

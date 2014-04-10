@@ -188,8 +188,6 @@ $app->post('/film', function() use ($app) {
 	}
 
 	echo json_encode($output);
-
-
 });
 
 // Aggiorna film
@@ -199,12 +197,9 @@ $app->put('/film/:id', function($id) use ($app) {
 
 	// generi
 	$id_genere = $app->cFilm->salvaGenere($film['genere']);
-	//$id_genere = 0;
-
 
 	// registi
 	$id_regista = $app->cFilm->salvaRegista($film['regista']);
-	//$id_regista = 0;
 
 	$q = "UPDATE `movie`
 			SET
@@ -241,6 +236,30 @@ $app->put('/film/:id', function($id) use ($app) {
 
 });
 
+// Upload
+$app->group('/upload', function() use ($app){
+
+	// Locandina
+	$app->post('/locandina', function() use ($app){
+		if ( !empty( $_FILES ) ) {
+
+		    $tempPath = $_FILES[ 'file' ][ 'tmp_name' ];
+		    $uploadPath = dirname( __FILE__ ) . '\uploads\\' . $_FILES[ 'file' ][ 'name' ];
+
+		    move_uploaded_file( $tempPath, $uploadPath );
+
+		    $answer = array( 'answer' => 'File transfer completed' );
+		    $json = json_encode( $answer );
+
+		    echo $json;
+
+		} else {
+
+		    echo 'No files';
+
+		}
+	});
+});
 
 
 $app->run();
