@@ -43,7 +43,7 @@ $app->get('/', function() use ($app) {
     echo 'OK';
 });
 
-// Dettaglio film
+// Dettaglio film per mostrare
 $app->get('/film/:id', function($id) use ($app) {
 	$url_locandina = "http://tiziano.patriziatrevisiartgallery.it/archivio-film/data/immagini/locandine/";
 
@@ -79,12 +79,49 @@ $app->get('/film/:id', function($id) use ($app) {
 	}
 
 	echo json_encode($film);
+});
 
+// Dettaglio film per edit
+$app->get('/film-edit-data/:id', function($id) use ($app) {
+
+	$film = array();
+
+	$q = "SELECT f.*, r.name AS regista, g.name AS genere 
+			FROM movie f
+			LEFT JOIN Genre g ON f.id_genere = g.id
+			LEFT JOIN Director r ON f.id_regista = r.id 
+			WHERE f.id = :id";
+	$st = $app->db->prepare($q);
+	$st->bindValue(":id", $id, PDO::PARAM_INT);
+	if ($st->execute())
+	{
+		if ($st->rowCount() > 0)
+		{
+			$d = $st->fetchObject();
+			$film = array(
+				"id" => 			$d->id,
+				"posizione" => 		prepareForJSON($d->supporto),
+				"tipo_supporto" => 	prepareForJSON($d->tipo_supporto),
+				"titolo" => 		prepareForJSON($d->titolo),
+				"sotto_titolo" => 	prepareForJSON($d->sottotitolo),
+				"regista" =>		prepareForJSON($d->regista),
+				"genere" =>			prepareForJSON($d->genere),
+				"cast" =>			prepareForJSON($d->cast),
+				"data_uscita" =>	prepareForJSON($d->data_uscita),
+				"locandina" =>		$d->locandina? prepareForJSON($d->locandina) : 0,
+				"trama" =>			prepareForJSON($d->trama),
+				"durata" =>			prepareForJSON($d->durata)
+			);
+		}
+	}
+
+	echo json_encode($film);
 });
 
 function prepareForJSON($s)
 {
-	return ($s? utf8_encode($s) : "");
+	return $s;
+	//return ($s? utf8_encode($s) : "");
 }
 
 // Lista Film
@@ -217,10 +254,30 @@ $app->put('/film/:id', function($id) use ($app) {
 	$film = json_decode($app->request()->getBody(), true);
 
 	// generi
-	$id_genere = $app->cFilm->salvaGenere($film['genere']);
+	if (!empty($film['genere']))
+	{
+		if (is_array($film['genere']))
+		{
+			$id_genere = $film['genere']['id'];
+		}
+		else
+		{
+			$id_genere = $app->cFilm->salvaGenere($film['genere']);
+		}		
+	}
 
 	// registi
-	$id_regista = $app->cFilm->salvaRegista($film['regista']);
+	if (!empty($film['regista']))
+	{
+		if (is_array($film['regista']))
+		{
+			$id_regista = $film['regista']['id'];
+		}
+		else
+		{
+			$id_regista = $app->cFilm->salvaRegista($film['regista']);
+		}
+	}
 
 	$q = "UPDATE `movie`
 			SET
@@ -233,7 +290,8 @@ $app->put('/film/:id', function($id) use ($app) {
 			`trama` = :trama,
 			`durata` = :durata,
 			`id_genere` = :id_genere,
-			`id_regista` = :id_regista
+			`id_regista` = :id_regista,
+			`locandina` = :locandina
 			WHERE `id` = :id;
 			";
 	$st = $app->db->prepare($q);
@@ -245,7 +303,7 @@ $app->put('/film/:id', function($id) use ($app) {
 	$st->bindValue(':cast', $film['cast'], PDO::PARAM_STR);
 	$st->bindValue(':trama', $film['trama'], PDO::PARAM_STR);
 	$st->bindValue(':durata', $film['durata'], PDO::PARAM_STR);
-	//$st->bindValue(':locandina', $film['locandina'], PDO::PARAM_STR);
+	$st->bindValue(':locandina', $film['locandina'], PDO::PARAM_STR);
 	$st->bindValue(':id_genere', $id_genere, PDO::PARAM_STR);
 	$st->bindValue(':id_regista', $id_regista, PDO::PARAM_STR);
 	$st->bindValue(':id', $film['id'], PDO::PARAM_STR);
@@ -282,6 +340,22 @@ $app->group('/upload', function() use ($app){
 
 		}
 	});
+});
+
+$app->post('/check-if-movie-exists', function() use ($app) {
+	$dati = json_decode($app->request()->getBody(), true);
+
+	$titolo = strtolower($dati['value']);
+
+	$return = array('isValid' => true);
+
+	if ($app->cFilm->checkExistance($titolo))
+	{
+		// movie exists, title is not valid
+		$return['isValid'] = false;
+	}
+
+	echo json_encode($return);
 });
 
 

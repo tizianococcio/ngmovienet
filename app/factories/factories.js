@@ -20,10 +20,15 @@ app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 		return $http.get(conf.root + 'ws/film');
 	};
 	
-	// Un film
+	// Mostra Un film
 	factory.getMovie = function(id) {
 		return $http.get(conf.root + 'ws/film/' + id);
 	};
+	
+	// Dati di un film per edit
+	factory.getMovieToEdit = function(id) {
+		return $http.get(conf.root + 'ws/film-edit-data/' + id);
+	};	
 	
 	// Salva un film
 	factory.setMovie = function(movie) {

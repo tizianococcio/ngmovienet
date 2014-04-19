@@ -1,18 +1,29 @@
 <h1>Modifica Film</h1>
-<a href="#/movie/{{ ctrl.movie.id }}">Indietro</a>
+
+<p><a href="#/movie/{{ ctrl.movie.id }}">Indietro</a></p>
+
 <p class="bg-success alert" ng-show="ctrl.submitStatus">{{ ctrl.messaggio }}</p>
 
-<form class="form-horizontal" role="form" novalidate name="nuovofilm_form">
+<form class="form-horizontal" role="form" name="ctrl.nuovofilm_form" novalidate>
   <div class="form-group">
-    <label for="inputTitolo" class="col-sm-2 control-label">Titolo</label>
+    <label for="inputTitolo" class="col-sm-2 control-label">* Titolo</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputTitolo" name="titolo" ng-model="ctrl.movie.titolo" placeholder="Titolo" required>
-    </div>
-   <div class="error" ng-show="nuovofilm_form.titolo.$dirty && nuovofilm_form.titolo.$invalid">    
-		<small class="error" ng-show="nuovofilm_form.titolo.$error.required">
-			Titolo obbligatorio
-		</small>
-	</div>    
+      <input 
+        type="text" 
+        class="form-control" 
+        id="inputTitolo" 
+        name="titolo" 
+        ng-model="ctrl.movie.titolo" 
+        ng-validazione="{{ctrl.config.baseUrl}}ws/check-if-movie-exists" 
+        ng-remote-method = 'POST' 
+        placeholder="Titolo" 
+        required>
+      <p 
+        ng-show="ctrl.nuovofilm_form.titolo.$invalid 
+          && !ctrl.nuovofilm_form.titolo.$pristine
+          && !ctrl.nuovofilm_form.titolo.$error.ngRemoteError && !ctrl.submitStatus" class="help-block">Inserire un titolo.</p>
+      <p ng-show="ctrl.nuovofilm_form.titolo.$error.ngRemoteError" class="help-block">Film già esistente.</p>
+    </div> 
   </div>
   
   <div class="form-group">
@@ -37,27 +48,34 @@
   </div>
 
   <div class="form-group">
-    <label for="inputSupporto" class="col-sm-2 control-label">Supporto</label>
+    <label for="inputSupporto" class="col-sm-2 control-label">* Supporto</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputSupporto" ng-model="ctrl.movie.posizione" placeholder="Supporto" required>
+      <input type="text" class="form-control" 
+        name="posizione"
+        id="inputSupporto" 
+        ng-model="ctrl.movie.posizione" 
+        placeholder="Supporto" required>
+      <p ng-show="ctrl.nuovofilm_form.posizione.$invalid && !ctrl.nuovofilm_form.posizione.$pristine && !ctrl.submitStatus" class="help-block">Inserire il supporto.</p>
     </div>
   </div>
   
   <div class="form-group">
-    <label for="inputGenere" class="col-sm-2 control-label">Genere</label>
+    <label for="inputGenere" class="col-sm-2 control-label">* Genere</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputGenere" ng-model="ctrl.movie.genere" placeholder="Genere"
+      <input type="text" class="form-control" id="inputGenere" ng-model="ctrl.movie.genere" name="genere" placeholder="Genere"
         typeahead="genere as genere.nome for genere in ctrl.getGeneri($viewValue) | limitTo:8 | filter:$viewValue"
         typeahead-wait-ms="500" required>
+      <p ng-show="ctrl.nuovofilm_form.genere.$invalid && !ctrl.nuovofilm_form.genere.$pristine && !ctrl.submitStatus" class="help-block">Inserire il genere.</p>        
     </div>
   </div>
   
   <div class="form-group">
-    <label for="inputRegia" class="col-sm-2 control-label">Regia</label>
+    <label for="inputRegia" class="col-sm-2 control-label">* Regia</label>
     <div class="col-sm-10">
-    <input type="text" class="form-control" id="inputRegia" ng-model="ctrl.movie.regista" placeholder="Regia" 
+    <input type="text" class="form-control" id="inputRegia" ng-model="ctrl.movie.regista" name="regista" placeholder="Regia" 
       typeahead="regista as regista.nome for regista in ctrl.getRegisti($viewValue) | limitTo:8 | filter:$viewValue" 
       typeahead-wait-ms="500" required>
+    <p ng-show="ctrl.nuovofilm_form.regista.$invalid && !ctrl.nuovofilm_form.regista.$pristine && !ctrl.submitStatus" class="help-block">Inserire il regista.</p>      
     </div>
   </div>
   
@@ -71,35 +89,86 @@
   <div class="form-group">
     <label for="inputDataUscita" class="col-sm-2 control-label">Data uscita</label>
     <!--http://angular-ui.github.io/bootstrap/#/datepicker-->
-    <p class="input-group">
+    <p class="input-group form-date-field">
       <input type="text" class="form-control" 
         datepicker-popup="dd-MMMM-yyyy" ng-model="ctrl.movie.data_uscita" 
         is-open="ctrl.opened" min="'1800-01-01'" max="'2015-06-22'" 
         datepicker-options="ctrl.dateOptions" date-disabled="ctrl.disabled(date, mode)" 
-        ng-required="true" close-text="Close" show-weeks="false" />
+        ng-required="true" close-text="Close" show-weeks="false" name="data" required/>
       <span class="input-group-btn">
         <button class="btn btn-default" ng-click="ctrl.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
       </span>
+      <p ng-show="ctrl.nuovofilm_form.data.$invalid && !ctrl.nuovofilm_form.data.$pristine && !ctrl.submitStatus" class="help-block">Scegliere una data.</p>      
     </p>
   </div>
 
   <div class="form-group">
     <label for="inputCast" class="col-sm-2 control-label">Cast</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="inputCast" ng-model="ctrl.movie.cast" placeholder="Cast" ngMaxlength=2048>
+      <input type="text" class="form-control" id="inputCast" ng-model="ctrl.movie.cast" placeholder="Cast" name="cast" ng-maxlength="2048">
+      <p ng-show="ctrl.nuovofilm_form.cast.$error.maxlength" class="help-block">Massimo 2048 caratteri.</p>
     </div>
   </div>
 
   <div class="form-group">
     <label for="inputTrama" class="col-sm-2 control-label">Trama</label>
     <div class="col-sm-10">
-      <textarea class="form-control" id="inputTrama" ng-model="ctrl.movie.trama" placeholder="Trama" ngMaxlength=5012></textarea>
+      <textarea class="form-control" id="inputTrama" ng-model="ctrl.movie.trama" placeholder="Trama" name="trama" ng-maxlength="10024"></textarea>
+      <p ng-show="ctrl.nuovofilm_form.trama.$error.maxlength" class="help-block">Massimo 5012 caratteri.</p>
     </div>
   </div>
+
+  <!-- Locandina -->
+  <div class="form-group" ng-file-drop>
+    <label class="col-sm-2 control-label">Locandina<p class="text-muted"><small>Sostituisce precedente</small></p></label>    
+    <div class="col-sm-10" style="margin-top: 8px; margin-left: -13px;">
+      <div class="col-xs-3">
+        <input ng-file-select type="file" />
+      </div>
+
+      <div class="col-xs-7">
+        <div ng-show="uploader.isHTML5">
+            <div class="over-zone zone" ng-file-over style="float: left">
+              Seleziona un file o trascinalo qui
+            </div>
+        </div>
+      
+
+      <ul class="col-xs-6">
+          <li ng-repeat="item in uploader.queue">
+              <div>Name: {{ item.file.name }}</div>
+              <div>Size: {{ item.file.size/1024/1024|number:2 }} Mb</div>
+              <div ng-show="uploader.isHTML5">
+                  Progress: {{ item.progress }}
+                  <div class="item-progress-box">
+                      <div class="item-progress" ng-style="{ 'width': item.progress + '%' }"></div>
+                  </div>
+              </div>
+              <!--div ng-show="controller.isImage(item.file)"-->
+                  Thumbnail (only images):
+                      <!-- Image preview -->
+                      <!--auto height-->
+                      <!--<div ng-thumb="{ file: item.file, width: 100 }"></div>-->
+                      <!--auto width-->
+                      <div ng-show="uploader.isHTML5" ng-thumb="{ file: item.file, height: 100 }"></div>
+                      <!--fixed width and height -->
+                      <!--<div ng-thumb="{ file: item.file, width: 100, height: 100 }"></div>-->
+              <!--/div-->
+              <div>
+                  <button ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">Upload</button>
+                  <button ng-click="item.cancel()" ng-disabled="!item.isUploading">Cancel</button>
+                  <button ng-click="item.remove()">Remove</button>
+              </div>
+          </li>
+      </ul>
+      </div>         
+    </div>
+  </div>
+  <!-- / Locandina -->  
   
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default" ng-click="ctrl.salva()">Salva</button>
+      <button type="submit" class="btn btn-default" ng-click="ctrl.salva()" ng-disabled="ctrl.nuovofilm_form.$invalid">Salva</button>
     </div>
   </div>
 

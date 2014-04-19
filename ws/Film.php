@@ -51,4 +51,13 @@ class Film
 		}
 		return $id;
 	}	
+
+	// Return true if the movie exists
+	public function checkExistance($titolo)
+	{
+		$st = $this->_db->prepare("SELECT COUNT(id) AS c FROM movie WHERE titolo = :t");
+		$st->bindValue(":t", $titolo, PDO::PARAM_STR);
+		$st->execute();
+		return ($st->fetchObject()->c > 0);
+	}
 }

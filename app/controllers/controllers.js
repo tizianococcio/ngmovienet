@@ -64,7 +64,36 @@ controllers.movieController = function (movieFactory) {
 	
 }
 
-controllers.detailsMovieController = function ($routeParams, movieFactory) {
+// mostra
+controllers.showMovieController = function ($routeParams, $fileUploader, $scope, movieFactory, CONFIGURATION) {
+	var _this = this;
+
+	_this.movie = {};
+
+	init();
+
+	function init() {
+
+		// Base URL for remote validation directive
+		_this.config = {baseUrl : CONFIGURATION.root};	
+	
+		function handleSuccess(data, status) {
+			_this.movie = data;
+		}
+
+		//Grab movieID off of the route        
+		var movieId = ($routeParams.id) ? parseInt($routeParams.id) : 0;
+		if (movieId > 0) {
+			_this.movie = movieFactory.getMovie(movieId).success(handleSuccess);
+		}
+		
+		_this.movie.data = new Date(_this.movie.data)
+	}
+
+}
+
+// modifica
+controllers.detailsMovieController = function ($routeParams, $fileUploader, $scope, movieFactory, CONFIGURATION) {
 
 	var _this = this;
 
@@ -73,6 +102,31 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 	init();
 
 	function init() {
+
+		// Form submit status
+		_this.submitStatus = false;
+
+		// Base URL for remote validation directive
+		_this.config = {baseUrl : CONFIGURATION.root};
+
+        // create a uploader with options
+        var uploader = $scope.uploader = $fileUploader.create({
+            scope: $scope,                          // to automatically update the html. Default: $rootScope
+            url: '/ngMovieNet/ws/upload/locandina'
+        });
+
+        // REGISTER UPLOADER HANDLERS
+        uploader.bind('afteraddingfile', function (event, item) {
+            console.info('After adding a file', item);
+        });
+
+        uploader.bind('success', function (event, xhr, item, response) {
+        	if (item.isUploaded)
+        	{
+        		_this.movie.locandina = response.filename; 
+        		console.log(_this.movie.locandina);
+        	}
+        });   		
 
 		_this.getRegisti = function(val) {
 			return movieFactory.getRegisti(val);
@@ -89,7 +143,7 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 		//Grab movieID off of the route        
 		var movieId = ($routeParams.id) ? parseInt($routeParams.id) : 0;
 		if (movieId > 0) {
-			_this.movie = movieFactory.getMovie(movieId).success(handleSuccess);
+			_this.movie = movieFactory.getMovieToEdit(movieId).success(handleSuccess);
 		}
 		
 		_this.movie.data = new Date(_this.movie.data)
@@ -132,14 +186,21 @@ controllers.detailsMovieController = function ($routeParams, movieFactory) {
 	};
 }
 
-controllers.newMovieController = function (movieFactory, $fileUploader, $scope) {
+// inserimento
+controllers.newMovieController = function (movieFactory, $fileUploader, $scope, CONFIGURATION) {
 
 	var _this = this;
 
 	init();
 	
 	function init()
-	{
+	{ 
+
+		// Form submit status
+		_this.submitStatus = false;
+
+		// Base URL for remote validation directive
+		_this.config = {baseUrl : CONFIGURATION.root};
 
         // create a uploader with options
         var uploader = $scope.uploader = $fileUploader.create({
@@ -155,10 +216,8 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope) 
         uploader.bind('success', function (event, xhr, item, response) {
         	if (item.isUploaded)
         	{
-        		console.log(response);
         		_this.movie.locandina = response.filename;
         	}
-            //console.info('Success', xhr, item, response);
         });        
 
 		_this.getRegisti = function(val) {

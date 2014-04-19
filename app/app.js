@@ -1,7 +1,7 @@
 
 
 		var app = angular.module('movieNetApp', 
-			['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload']);
+			['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload', 'ng-remote-validator-directive']);
 		
 		app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($routeProvider, $locationProvider, conf){
 
@@ -27,7 +27,7 @@
 				})
 				.when('/movie/:id',
 				{
-					controller: 'detailsMovieController',
+					controller: 'showMovieController',
 					templateUrl: baseFolder + '/app/partials/moviedetail.html',
 					controllerAs: 'ctrl'
 				})

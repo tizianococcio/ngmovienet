@@ -11,8 +11,10 @@ class Database {
         } else {
             $dbname = $d->default['database'];
         }
-        $v = 'mysql:host=' . $d->default['host'] . ';dbname='.$d->default['prefix'].$dbname;
-        return PDOFactory::GetPDO($v, $d->default['login'], $d->default['password'], array(PDO::ATTR_PERSISTENT)); 
+        $v = 'mysql:host=' . $d->default['host'] . ';dbname='.$d->default['prefix'].$dbname . ';charset=utf8';
+        $db = PDOFactory::GetPDO($v, $d->default['login'], $d->default['password'], array(PDO::ATTR_PERSISTENT)); 
+        $db->query('SET NAMES utf8');
+        return $db;
     }
 }
 ?>
