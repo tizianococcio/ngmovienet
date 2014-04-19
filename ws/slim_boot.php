@@ -19,7 +19,10 @@ $app = new \Slim\Slim(array(
     'debug' 	=> true,
 ));
 
-$app->baseUrl 			= '/ngMovieNet/ws';
+$app->documentRoot		= $_SERVER['DOCUMENT_ROOT'];
+$app->appRoot			= '/ngMovieNet';
+$app->baseUrl 			= $app->baseUrl . '/ws';
+$app->uploadFolder		= $app->documentRoot . $app->appRoot . '/uploads/';
 $app->baseHttpPath 		= $app->environment['slim.url_scheme'] . '://' . $app->environment['HTTP_HOST'] . $app->baseUrl;
 
 ?>

@@ -11,6 +11,19 @@ $app->db = Database::Load();
 
 $app->cFilm = new Film($app->db);
 
+// Struttura film
+$app->film = array(
+	'titolo' => '',
+	'sottotitolo' => '',
+	'titolo_originale' => '',
+	'posizione' => '',
+	'data' => '',
+	'cast' => '',
+	'trama' => '',
+	'durata' => '',
+	'locandina' => '',
+);
+
 /**
  * Azione per pagine non trovate
  */
@@ -130,10 +143,15 @@ $app->get('/registi', function () use ($app) {
 $app->post('/film', function() use ($app) {
 	$tabella = "movie";
 	$film = json_decode($app->request()->getBody(), true);
+	$film = array_merge($app->film, $film);
+
+	//print_r($film);
+	//die();
+
 	$id_genere = $id_regista = 0;
 
 	// generi
-	if (isset($film['genere']) && !empty($film['genere'])) 
+	if (!empty($film['genere'])) 
 	{
 		// Se $film['genere'] è un array si tratta di un genere già presente nel db
 		if (is_array($film['genere']))
@@ -147,7 +165,7 @@ $app->post('/film', function() use ($app) {
 	}
 	
 	// registi
-	if (isset($film['regista']) && !empty($film['regista']))
+	if (!empty($film['regista']))
 	{
 		// Se $film['regista'] è un array si tratta di un regista già presente nel db
 		if (is_array($film['regista']))
@@ -162,9 +180,9 @@ $app->post('/film', function() use ($app) {
 
 	// Inserimento database
 	$q = "INSERT INTO {$tabella} 
-			(titolo, sottotitolo, titolo_originale, id_genere, id_regista, supporto, data_uscita, cast, trama, durata) 
+			(titolo, sottotitolo, titolo_originale, id_genere, id_regista, supporto, data_uscita, cast, trama, durata, locandina) 
 		  VALUES 
-		  	(:titolo, :sottotitolo, :titolo_originale, :genere, :regista, :supporto, :data_uscita, :cast, :trama, :durata)";
+		  	(:titolo, :sottotitolo, :titolo_originale, :genere, :regista, :supporto, :data_uscita, :cast, :trama, :durata, :locandina)";
 	$st = $app->db->prepare($q);
 	$st->bindValue(":titolo", $film['titolo'], PDO::PARAM_STR);
 	$st->bindValue(":sottotitolo", $film['sottotitolo'], PDO::PARAM_STR);
@@ -176,15 +194,18 @@ $app->post('/film', function() use ($app) {
 	$st->bindValue(":cast", $film['cast'], PDO::PARAM_STR);
 	$st->bindValue(":trama", $film['trama'], PDO::PARAM_STR);
 	$st->bindValue(":durata", $film['durata'], PDO::PARAM_STR);
-	$st->execute();
+	$st->bindValue(":locandina", $film['locandina'], PDO::PARAM_STR);
 
+	$st->execute();
+	
 	$output = array();
 	if ($st->rowCount() > 0)
 	{
 		$id = $app->db->lastInsertId();
 		$output = array('status' => 'ok', 'id' => $id);
 	} else {
-		$output = array('status' => 'error', 'id' => -1);
+		$info = $st->errorInfo();
+		$output = array('status' => 'error', 'id' => -1, 'details' => $info[2]);
 	}
 
 	echo json_encode($output);
@@ -241,14 +262,16 @@ $app->group('/upload', function() use ($app){
 
 	// Locandina
 	$app->post('/locandina', function() use ($app){
+
 		if ( !empty( $_FILES ) ) {
 
 		    $tempPath = $_FILES[ 'file' ][ 'tmp_name' ];
-		    $uploadPath = dirname( __FILE__ ) . '\uploads\\' . $_FILES[ 'file' ][ 'name' ];
+		    $fileName = uniqid() . '_' . $_FILES[ 'file' ][ 'name' ];
+		    $uploadPath = $app->uploadFolder . $fileName;
 
 		    move_uploaded_file( $tempPath, $uploadPath );
 
-		    $answer = array( 'answer' => 'File transfer completed' );
+		    $answer = array( 'answer' => 'File transfer completed', 'status' => 'ok', 'filename' => $fileName);
 		    $json = json_encode( $answer );
 
 		    echo $json;

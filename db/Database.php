@@ -1,6 +1,6 @@
 <?php
 
-require_once('DatabaseConfig.php');
+require_once('../../credenziali/ngMovieNet.php');
 require_once('PDOFactory.php');
 
 class Database {

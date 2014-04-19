@@ -144,12 +144,21 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope) 
         // create a uploader with options
         var uploader = $scope.uploader = $fileUploader.create({
             scope: $scope,                          // to automatically update the html. Default: $rootScope
-            url: 'upload.php'
+            url: '/ngMovieNet/ws/upload/locandina'
         });
 
         // REGISTER UPLOADER HANDLERS
         uploader.bind('afteraddingfile', function (event, item) {
             console.info('After adding a file', item);
+        });
+
+        uploader.bind('success', function (event, xhr, item, response) {
+        	if (item.isUploaded)
+        	{
+        		console.log(response);
+        		_this.movie.locandina = response.filename;
+        	}
+            //console.info('Success', xhr, item, response);
         });        
 
 		_this.getRegisti = function(val) {
