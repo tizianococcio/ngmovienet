@@ -62,18 +62,19 @@ $app->get('/film/:id', function($id) use ($app) {
 		{
 			$d = $st->fetchObject();
 			$film = array(
-				"id" => 			$d->id,
-				"posizione" => 		prepareForJSON($d->supporto),
-				"tipo_supporto" => 	prepareForJSON($d->tipo_supporto),
-				"titolo" => 		prepareForJSON($d->titolo),
-				"sotto_titolo" => 	prepareForJSON($d->sottotitolo),
-				"regista" =>		prepareForJSON($d->regista),
-				"genere" =>			prepareForJSON($d->genere),
-				"cast" =>			prepareForJSON($d->cast),
-				"data_uscita" =>	prepareForJSON($d->data_uscita),
-				"locandina" =>		$d->locandina? prepareForJSON($url_locandina . $d->locandina) : 0,
-				"trama" =>			prepareForJSON($d->trama),
-				"durata" =>			prepareForJSON($d->durata)
+				"id" => 				$d->id,
+				"posizione" => 			prepareForJSON($d->supporto),
+				"tipo_supporto" => 		prepareForJSON($d->tipo_supporto),
+				"titolo" => 			prepareForJSON($d->titolo),
+				"titolo_originale" => 	prepareForJSON($d->titolo_originale),
+				"sotto_titolo" => 		prepareForJSON($d->sottotitolo),
+				"regista" =>			prepareForJSON($d->regista),
+				"genere" =>				prepareForJSON($d->genere),
+				"cast" =>				prepareForJSON($d->cast),
+				"data_uscita" =>		prepareForJSON($d->data_uscita),
+				"locandina" =>			$d->locandina? prepareForJSON($url_locandina . $d->locandina) : 0,
+				"trama" =>				prepareForJSON($d->trama),
+				"durata" =>				prepareForJSON($d->durata)
 			);
 		}
 	}
@@ -99,18 +100,19 @@ $app->get('/film-edit-data/:id', function($id) use ($app) {
 		{
 			$d = $st->fetchObject();
 			$film = array(
-				"id" => 			$d->id,
-				"posizione" => 		prepareForJSON($d->supporto),
-				"tipo_supporto" => 	prepareForJSON($d->tipo_supporto),
-				"titolo" => 		prepareForJSON($d->titolo),
-				"sotto_titolo" => 	prepareForJSON($d->sottotitolo),
-				"regista" =>		prepareForJSON($d->regista),
-				"genere" =>			prepareForJSON($d->genere),
-				"cast" =>			prepareForJSON($d->cast),
-				"data_uscita" =>	prepareForJSON($d->data_uscita),
-				"locandina" =>		$d->locandina? prepareForJSON($d->locandina) : 0,
-				"trama" =>			prepareForJSON($d->trama),
-				"durata" =>			prepareForJSON($d->durata)
+				"id" => 				$d->id,
+				"posizione" => 			prepareForJSON($d->supporto),
+				"tipo_supporto" => 		prepareForJSON($d->tipo_supporto),
+				"titolo" => 			prepareForJSON($d->titolo),
+				"titolo_originale" => 	prepareForJSON($d->titolo_originale),
+				"sotto_titolo" => 		prepareForJSON($d->sottotitolo),
+				"regista" =>			prepareForJSON($d->regista),
+				"genere" =>				prepareForJSON($d->genere),
+				"cast" =>				prepareForJSON($d->cast),
+				"data_uscita" =>		prepareForJSON($d->data_uscita),
+				"locandina" =>			$d->locandina? prepareForJSON($d->locandina) : 0,
+				"trama" =>				prepareForJSON($d->trama),
+				"durata" =>				prepareForJSON($d->durata)
 			);
 		}
 	}
