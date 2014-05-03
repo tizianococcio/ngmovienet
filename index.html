@@ -8,6 +8,7 @@
 	<link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="assets/css/app.css" rel="stylesheet">
 	<link href="assets/css/uploader.css" rel="stylesheet">
+	<link href="assets/css/dropdowns.css" rel="stylesheet">
 </head>
 <body>
 
@@ -37,8 +38,8 @@
 							<li><a href="#">Regista</a></li>
 							<li><a href="#">Genere</a></li>
 							<li class="divider"></li>
-							<li class="dropdown-header">Nav header</li>
-							<li><a href="#">Separated link</a></li>
+							<li class="dropdown-header">Altro</li>
+							<li><a href="#/liste/nuova">Nuova lista</a></li>
 							<li><a href="#">One more separated link</a></li>	
 						</ul>
 					</li>
@@ -69,7 +70,13 @@
 	<script src='app/app.js'></script>
 	<script src='app/controllers/controllers.js'></script>
 	<script src='app/factories/factories.js'></script>
+	<script src='app/factories/lista_factory.js'></script>
+	
 	<script src="app/directives/directives.js"></script>
+	<script src="app/directives/angular-dropdowns.min.js"></script>
+
+	<!--script src="app/directives/addTo.js"></script-->
+	<!--script type="text/javascript" src="app/directives/dropdowns.js"></script-->
     
     <!-- Typeahead NB: La versione .min contiene anche il componente datepicker -->
     <!--script src='libs/js/ui-bootstrap-custom-0.10.0.js'></script-->

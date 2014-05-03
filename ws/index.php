@@ -140,7 +140,7 @@ $app->get('/film', function() use ($app) {
 					"id" => $d->id, 
 					"posizione" => $d->supporto,
 					"supporto" => $d->tipo_supporto,
-					"titolo" => utf8_encode($d->titolo)
+					"titolo" => $d->titolo
 				  );
 	}
 	echo json_encode($film);
@@ -156,7 +156,7 @@ $app->get('/generi', function () use ($app) {
 	$data = array();
 	while ($d = $st->fetchObject())
 	{
-		$data[] = array('id' => $d->id, 'nome' => utf8_encode($d->name));
+		$data[] = array('id' => $d->id, 'nome' => $d->name);
 	}
 	
 	echo json_encode($data);
@@ -172,7 +172,7 @@ $app->get('/registi', function () use ($app) {
 	$data = array();
 	while ($d = $st->fetchObject())
 	{
-		$data[] = array('id' => $d->id, 'nome' => utf8_encode($d->name));
+		$data[] = array('id' => $d->id, 'nome' => $d->name);
 	}
 	
 	echo json_encode($data);
@@ -326,7 +326,7 @@ $app->group('/upload', function() use ($app){
 		if ( !empty( $_FILES ) ) {
 
 		    $tempPath = $_FILES[ 'file' ][ 'tmp_name' ];
-		    $fileName = uniqid() . '_' . $_FILES[ 'file' ][ 'name' ];
+		    $fileName = uniqid() . '_' . ((strlen($_FILES[ 'file' ][ 'name' ]) > 8) ? substr($_FILES[ 'file' ][ 'name' ], 0, 8) : $_FILES[ 'file' ][ 'name' ]);
 		    $uploadPath = $app->uploadFolder . $fileName;
 
 		    move_uploaded_file( $tempPath, $uploadPath );
@@ -340,6 +340,66 @@ $app->group('/upload', function() use ($app){
 
 		    echo 'No files';
 
+		}
+	});
+});
+
+// Liste
+$app->group('/liste', function() use ($app){
+
+	// Crea lista
+	$app->post('/crea', function() use ($app){
+		$dati = json_decode($app->request()->getBody(), true);
+		$nome = $dati['nome'];
+
+		$q = "INSERT INTO liste (nome) VALUES (:nome)";
+		$st = $app->db->prepare($q);
+		$st->bindValue(":nome", $nome, PDO::PARAM_STR);
+		if ($st->execute())
+		{
+			$output = array('status' => 'ok');
+			echo json_encode($output);
+		}
+	});
+
+	// Elenca liste
+	$app->get('/elenca', function() use ($app){
+
+		$data = array();
+
+		$q = "SELECT * FROM liste ORDER BY last_used DESC, nome";
+		$st = $app->db->prepare($q);
+		if ($st->execute())
+		{
+			while ($d = $st->fetchObject())
+			{
+				$data[] = array('id' => $d->id, 'nome' => $d->nome);
+			}
+			echo json_encode($data);
+		}
+	});	
+
+	// associa un film ad una lista
+	$app->post('/associa', function() use ($app){
+		$dati = json_decode($app->request()->getBody(), true);
+		$id_film = $dati['id_film'];
+		$id_lista = $dati['id_lista'];
+
+		$q = "INSERT INTO liste_movie (id_film, id_lista) VALUES (:id_film, :id_lista)";
+		$st = $app->db->prepare($q);
+		$st->bindValue(":id_film", $id_film, PDO::PARAM_INT);
+		$st->bindValue(":id_lista", $id_lista, PDO::PARAM_INT);
+		if ($st->execute())
+		{
+
+			// aggiorno last used
+			$qu = "UPDATE liste SET last_used = NOW() WHERE id = :id";
+			$stu = $app->db->prepare($qu);
+			$stu->bindValue(":id", $id_lista, PDO::PARAM_INT);
+			$stu->execute();
+
+			$output = array('status' => 'ok');
+			echo json_encode($output);
 		}
 	});
 });

@@ -29,6 +29,54 @@ controllers.testController = function ($fileUploader, $scope){
 
 };
 
+// New List Controller
+controllers.newListController = function (listaFactory){
+	
+
+	var _this = this;
+	
+	init();
+	
+	function init() {	
+
+		// Form submit status
+		_this.submitStatus = false;
+
+		// messagio salvataggio
+		_this.messaggio = "";
+	}
+
+	_this.salva = function() {
+		listaFactory.setLista(_this.lista).success(function(data){
+			if (data.status === 'ok')
+			{
+				_this.submitStatus = true;
+				_this.lista = [];
+				_this.messaggio = "Lista creata";
+			}
+			else
+			{
+				_this.messaggio = "Errore.";
+			}
+		});
+	};
+
+};
+
+controllers.ListController = function ($routeParams){
+	
+
+	var _this = this;
+	
+	init();
+	
+	function init() {	
+		console.log($routeParams.movieId);
+		console.log($routeParams.listaId);
+	}
+
+};
+
 // Home page controller
 controllers.homeController = function (){
 	
@@ -44,23 +92,38 @@ controllers.homeController = function (){
 
 };
 
-controllers.movieController = function (movieFactory) {
+// Lista film
+controllers.movieController = function ($scope, movieFactory, listaFactory) {
 
 	var _this = this;
 
 	_this.movies = [];
+
+	_this.liste = [];
 
 	init();
 	
 	function handleSuccess(data, status) {
 		_this.movies = data;
 	}
+
+	function handleListeSuccess(data, status) {
+		_this.liste = data;
+	}	
 	
 	function init() {
 		_this.movies = movieFactory.getMovies();
+
+		_this.liste = listaFactory.getListe();
+
+		$scope.play = function() {
+			console.log('OK')
+		}
 	}
 	
 	movieFactory.getMovies().success(handleSuccess);
+
+	listaFactory.getListe().success(handleListeSuccess);
 	
 }
 

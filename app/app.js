@@ -42,6 +42,17 @@
 					controller: 'detailsMovieController',
 					templateUrl: baseFolder + '/app/partials/modificafilm.html',
 					controllerAs: 'ctrl'
+				})	
+				.when('/liste/nuova',
+				{
+					controller: 'newListController',
+					templateUrl: baseFolder + '/app/partials/lista_crea.html',
+					controllerAs: 'ctrl'
+				})
+				.when('/liste/associa/:movieId/:listaId',
+				{
+					controller: 'ListController',
+					controllerAs: 'ctrl'
 				})				
 				.otherwise({ redirectTo: '/' });
 		}]);
