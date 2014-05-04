@@ -420,19 +420,84 @@ $app->group('/liste', function() use ($app){
 		{
 			while ($d = $st->fetchObject())
 			{
-				$data[] = array('id' => $d->id, 'nome' => $d->nome);
+
+				// for each list get all the movies linked to it
+				$qm = "SELECT id_movie FROM liste_movie WHERE id_lista = :lista";
+				$stm = $app->db->prepare($qm);
+				$stm->bindValue(":lista", $d->id, PDO::PARAM_INT);
+				$stm->execute();
+
+				$movies = array();
+
+				while ($dm = $stm->fetchObject())
+				{
+					$movies[] = $dm->id_movie;
+				}
+
+				$data[] = array('id' => $d->id, 'nome' => $d->nome, 'movies' => $movies);
 			}
 			echo json_encode($data);
 		}
 	});	
 
+	// Restituisce tutti i film in una lista
+	$app->get('/:id/movies', function($id) use ($app){
+		$film = array();
+
+		$q = "SELECT m.* FROM movie m INNER JOIN liste_movie lm ON m.id = lm.id_movie WHERE lm.id_lista = :id_lista";
+		$st = $app->db->prepare($q);
+		$st->bindValue(":id_lista", $id, PDO::PARAM_INT);
+		if ($st->execute())
+		{
+			while ($d = $st->fetchObject())
+			{
+				$film[] = array(
+							"id" => $d->id, 
+							"posizione" => $d->supporto,
+							"supporto" => $d->tipo_supporto,
+							"titolo" => $d->titolo
+						  );
+			}
+			echo json_encode($film);
+		}
+	});
+
+	// Dettaglio di una lista
+	$app->get('/dettaglio/:id', function($id) use ($app){
+		$data = array();
+
+		$q = "SELECT * FROM liste WHERE id = :id";
+		$st = $app->db->prepare($q);
+		$st->bindValue(":id", $id, PDO::PARAM_INT);
+		if ($st->execute())
+		{
+			if ($d = $st->fetchObject())
+			{
+				$data = array('id' => $d->id, 'nome' => $d->nome);
+			}
+			echo json_encode($data);
+		}
+	});		
+
 	// associa un film ad una lista
-	$app->post('/associa', function() use ($app){
+	$app->post('/link', function() use ($app){
+
 		$dati = json_decode($app->request()->getBody(), true);
 		$id_film = $dati['id_film'];
 		$id_lista = $dati['id_lista'];
 
-		$q = "INSERT INTO liste_movie (id_film, id_lista) VALUES (:id_film, :id_lista)";
+		// aggiungo solo se non è già presente
+		$qcheck = "SELECT COUNT(id) AS c FROM liste_movie WHERE id_movie = :id_film AND id_lista = :id_lista";
+		$st_check = $app->db->prepare($qcheck);
+		$st_check->bindValue(":id_film", $id_film, PDO::PARAM_INT);
+		$st_check->bindValue(":id_lista", $id_lista, PDO::PARAM_INT);
+		$st_check->execute();
+		if ($st_check->fetchObject()->c > 0)
+		{
+			return;
+		}
+
+		$q = "INSERT INTO liste_movie (id_movie, id_lista) VALUES (:id_film, :id_lista)";
 		$st = $app->db->prepare($q);
 		$st->bindValue(":id_film", $id_film, PDO::PARAM_INT);
 		$st->bindValue(":id_lista", $id_lista, PDO::PARAM_INT);
@@ -449,6 +514,24 @@ $app->group('/liste', function() use ($app){
 			echo json_encode($output);
 		}
 	});
+
+	// deassocia un film da una lista
+	$app->post('/unlink', function() use ($app){
+
+		$dati = json_decode($app->request()->getBody(), true);
+		$id_film = $dati['id_film'];
+		$id_lista = $dati['id_lista'];
+
+		$q = "DELETE FROM liste_movie WHERE id_movie = :id_film AND id_lista = :id_lista";
+		$st = $app->db->prepare($q);
+		$st->bindValue(":id_film", $id_film, PDO::PARAM_INT);
+		$st->bindValue(":id_lista", $id_lista, PDO::PARAM_INT);
+		if ($st->execute())
+		{
+			$output = array('status' => 'ok');
+			echo json_encode($output);
+		}
+	});		
 });
 
 // Check if movie exists

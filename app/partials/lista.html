@@ -25,21 +25,25 @@
 	<tr>
 		<th>Titolo</th>
 		<th>Posizione</th>
+		<th>&nbsp;</th>
 	</tr>
 	
 	<tr ng-repeat="movie in ctrl.movies | filter: filtro | startFrom: ctrl.pagination.page * ctrl.pagination.perPage | limitTo: ctrl.pagination.perPage">
 		<td><a href="#/movie/{{ movie.id }}">{{ movie.titolo }}</a></td>
 		<td>{{ movie.posizione }}</td>
-		<!--td>
-			<ul>
-				<li class="dropdown">
-					<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Aggiungi a <b class="caret"></b></a>
-					<ul class="dropdown-menu">
-						<li ng-repeat="lista in ctrl.liste"><a href="#/liste/associa/{{ movie.id }}/{{ lista.id }}">{{ lista.nome }}</a></li>
-					</ul>
+		<td class="dropdown">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				Lista
+				<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu">
+				<li ng-repeat="lista in ctrl.liste">
+					<a href="javascript:void(0)" ng-click="ctrl.linkMovieToList(movie.id, lista.id)">
+						<span ng-if="lista.movies.indexOf(movie.id) > -1" class="glyphicon glyphicon-ok">&nbsp;</span>{{ lista.nome }}
+					</a>
 				</li>
 			</ul>
-		</td-->
+		</td>
 	</tr>
 </table>
 

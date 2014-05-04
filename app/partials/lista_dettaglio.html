@@ -1,0 +1,19 @@
+<ul class="pager">
+	<li class="previous"><a href="#/liste">&larr; Torna alle liste</a></li>
+</ul>
+
+<h1>{{ ctrl.lista.nome }}</h1>
+<h4>{{ ctrl.movies.length }} element<span ng-if="ctrl.movies.length > 1">i</span><span ng-if="ctrl.movies.length == 1">o</span></h4>
+
+<input type="text" class="form-control" ng-model="filtro" placeholder="Filtra">
+
+
+<table class="table table-hover">
+	<tr>
+		<th>Titolo</th>
+	</tr>
+	
+	<tr ng-repeat="movie in ctrl.movies | filter: filtro">
+		<td><a href="{{ path('showMovieController', {id: movie.id}) }}">{{ movie.titolo }}</a></td>
+	</tr>
+</table>

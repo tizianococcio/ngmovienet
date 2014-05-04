@@ -63,7 +63,8 @@ controllers.newListController = function (listaFactory){
 
 };
 
-controllers.ListController = function ($routeParams){
+// Lista liste
+controllers.ListController = function (listaFactory){
 	
 
 	var _this = this;
@@ -71,10 +72,45 @@ controllers.ListController = function ($routeParams){
 	init();
 	
 	function init() {	
-		console.log($routeParams.movieId);
-		console.log($routeParams.listaId);
+		_this.lists = [];
+		listaFactory.getListe().success(handleSuccess);
 	}
 
+	function handleSuccess(data, status)
+	{
+		_this.lists = data;
+	}
+};
+
+// dettaglio lista (mostra film)
+controllers.detailsListController = function (listaFactory, $routeParams){
+	
+	var _this = this;
+	
+	init();
+	
+	function init() {	
+		_this.movies = [];
+		_this.lista = [];
+
+		var id = $routeParams.id ? $routeParams.id : 0;
+
+		if (id > 0)
+		{
+			listaFactory.getMoviesInList(id).success(handleSuccess);
+			listaFactory.getLista(id).success(handleListDetailSuccess);
+		}
+	}
+
+	function handleSuccess(data, status)
+	{
+		_this.movies = data;
+	}
+
+	function handleListDetailSuccess(data, status)
+	{
+		_this.lista = data;
+	}
 };
 
 // Home page controller
@@ -87,7 +123,19 @@ controllers.homeController = function (){
 	
 	init();
 	
-	function init() {	
+	function init() {
+
+		$('#example').popover({
+			animation: true,
+			content: 'Film aggiunto alla lista',
+		});		
+
+		_this.showInfo = function() {
+			$('#example').popover('show');
+			window.setTimeout(function() {
+				$('#example').popover('hide');
+			}, 2000);
+		};
 	}
 
 };
@@ -123,8 +171,14 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, dire
 	function handleDirectorSuccess(data, status) {
 		_this.director = data;
 	}
+
+	function handleLinkListSuccess(data, status) {
+		console.log('Fatto!');
+	}
 	
 	function init() {
+
+		listaFactory.getListe().success(handleListeSuccess);
 
 		// Param director_id in GET request - filtering movies by director
 		var directorId = $routeParams.director_id ? $routeParams.director_id : 0;
@@ -142,14 +196,57 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, dire
 			movieFactory.getMovies().success(handleSuccess);	
 		}
 
-		_this.liste = listaFactory.getListe();
+		// Links a movie to a list of favourites
+		_this.linkMovieToList = function(movieId, listaId) {
+			
+			var listObjId = getListObjectId(listaId);
 
-		$scope.play = function() {
-			console.log('OK')
+			$('#popover-info-handle').popover({
+				animation: true,
+				placement: 'bottom',
+			});
+
+			if (listObjId !== undefined)
+			{
+				// if already in the list removes it, otherwise adds it
+				if ((foundAt = _this.liste[listObjId].movies.indexOf(movieId)) > -1)
+				{
+					listaFactory.unlinkMovie(movieId, listaId).success(handleLinkListSuccess);
+					_this.liste[listObjId].movies.splice(foundAt, 1);
+					$('#popover-info-handle').data('bs.popover').options.content = 'Film rimosso';
+					$('#popover-info-handle').popover('show');
+				}
+				else
+				{
+					listaFactory.linkMovie(movieId, listaId).success(handleLinkListSuccess);
+					_this.liste[listObjId].movies.push(movieId.toString());
+					$('#popover-info-handle').data('bs.popover').options.content = 'Film aggiunto';
+					$('#popover-info-handle').popover('show');
+				}
+
+				window.setTimeout(function() {
+					$('#popover-info-handle').popover('hide');
+				}, 2000);
+			}
 		}
 	}
 
-	listaFactory.getListe().success(handleListeSuccess);
+	// gets the index of the object, in the array of objects
+	function getListObjectId(listId)
+	{
+		var index = undefined;
+
+		angular.forEach(_this.liste, function(value, key){
+			if (parseInt(listId) == parseInt(value.id))
+			{
+				index = key;
+			}
+		});
+
+		return index;
+	}
+
+	
 }
 
 // mostra
