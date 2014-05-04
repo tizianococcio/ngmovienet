@@ -21,15 +21,16 @@ app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($ro
 		{
 			controller: 'movieController',
 			templateUrl: baseFolder + '/app/partials/lista.html',
-			controllerAs: 'ctrl'
+			controllerAs: 'ctrl',
+			reloadOnSearch: false
 		})
 		.when('/movies/byDirector/:director_id',
 		{
 			controller: 'movieController',
 			templateUrl: baseFolder + '/app/partials/lista.html',
 			controllerAs: 'ctrl'
-		})				
-		.when('/movie/:id',
+		})
+		.when('/movie/show/:id',
 		{
 			controller: 'showMovieController',
 			templateUrl: baseFolder + '/app/partials/moviedetail.html',
@@ -53,16 +54,16 @@ app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($ro
 			templateUrl: baseFolder + '/app/partials/lista_liste.html',
 			controllerAs: 'ctrl'
 		})
-		.when('/liste/:id',
-		{
-			controller: 'detailsListController',
-			templateUrl: baseFolder + '/app/partials/lista_dettaglio.html',
-			controllerAs: 'ctrl'
-		})
 		.when('/liste/nuova',
 		{
 			controller: 'newListController',
 			templateUrl: baseFolder + '/app/partials/lista_crea.html',
+			controllerAs: 'ctrl'
+		})		
+		.when('/liste/:id',
+		{
+			controller: 'detailsListController',
+			templateUrl: baseFolder + '/app/partials/lista_dettaglio.html',
 			controllerAs: 'ctrl'
 		})
 		.when('/directors',

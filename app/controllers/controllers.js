@@ -124,24 +124,12 @@ controllers.homeController = function (){
 	init();
 	
 	function init() {
-
-		$('#example').popover({
-			animation: true,
-			content: 'Film aggiunto alla lista',
-		});		
-
-		_this.showInfo = function() {
-			$('#example').popover('show');
-			window.setTimeout(function() {
-				$('#example').popover('hide');
-			}, 2000);
-		};
 	}
 
 };
 
 // Lista film
-controllers.movieController = function ($scope, movieFactory, listaFactory, directorsFactory, Pagination, $routeParams) {
+controllers.movieController = function ($scope, movieFactory, listaFactory, directorsFactory, Pagination, $routeParams, $location) {
 
 	var _this = this;
 
@@ -152,12 +140,24 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, dire
 	_this.director = [];
 
 	init();
+
+	function updatePageURLParam(pag) {
+		$location.search('page', pag);
+	}
 	
 	function handleSuccess(data, status) {
 
+		var locationSearch = $location.search();
+
+		// if a page is set, starts pagination from there
+		var page = locationSearch.page ? locationSearch.page : 1;
+
 		_this.pagination = Pagination.getNew();
+
+		_this.pagination.page = page - 1;
 		_this.pagination.perPage = 15;
 		_this.pagination.range = 2;
+		_this.pagination.setCallback(updatePageURLParam);
 
 		_this.movies = data;
 
@@ -199,10 +199,11 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, dire
 		// Links a movie to a list of favourites
 		_this.linkMovieToList = function(movieId, listaId) {
 			
+			// get the numerical index of the object
 			var listObjId = getListObjectId(listaId);
 
+			// popover setup
 			$('#popover-info-handle').popover({
-				animation: true,
 				placement: 'bottom',
 			});
 
@@ -211,19 +212,30 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, dire
 				// if already in the list removes it, otherwise adds it
 				if ((foundAt = _this.liste[listObjId].movies.indexOf(movieId)) > -1)
 				{
+					// unlink the movie - remote call
 					listaFactory.unlinkMovie(movieId, listaId).success(handleLinkListSuccess);
+
+					// removes from client side model
 					_this.liste[listObjId].movies.splice(foundAt, 1);
+
+					// Showing popover
 					$('#popover-info-handle').data('bs.popover').options.content = 'Film rimosso';
 					$('#popover-info-handle').popover('show');
 				}
 				else
 				{
+					// link the movie - remote call
 					listaFactory.linkMovie(movieId, listaId).success(handleLinkListSuccess);
+
+					// add to client side model
 					_this.liste[listObjId].movies.push(movieId.toString());
+
+					// Showing popover
 					$('#popover-info-handle').data('bs.popover').options.content = 'Film aggiunto';
 					$('#popover-info-handle').popover('show');
 				}
 
+				// Hides the popover after 2 seconds
 				window.setTimeout(function() {
 					$('#popover-info-handle').popover('hide');
 				}, 2000);

@@ -13,33 +13,44 @@ paginationModule.factory('Pagination', function() {
     var paginator = {
       numPages: 1,
       perPage: perPage,
-      page: 0
+      page: 0,
+      cb: undefined,
     };
+
+    // callback used to inform of the current page and update the URL
+    paginator.setCallback = function(cb) {
+      paginator.cb = cb;
+    }
 
     paginator.prevPage = function() {
       if (paginator.page > 0) {
         paginator.page -= 1;
+        paginator.cb(paginator.page + 1);
       }
     };
 
     paginator.nextPage = function() {
       if (paginator.page < paginator.numPages - 1) {
         paginator.page += 1;
+        paginator.cb(paginator.page + 1);
       }
     };
 
     paginator.toPageId = function(id) {
       if (id >= 0 && id <= paginator.numPages - 1) {
         paginator.page = id;
+        paginator.cb(paginator.page + 1);
       }
     };
 
     paginator.firstPage = function() {
       paginator.page = 0;
+      paginator.cb(paginator.page + 1);
     };    
 
     paginator.lastPage = function() {
       paginator.page = paginator.numPages - 1;
+      paginator.cb(paginator.page + 1);
     };    
 
     return paginator;

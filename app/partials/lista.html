@@ -1,16 +1,30 @@
 <h1>Film</h1>
+
+<!-- Director's name, used when showing movies filtered by director -->
 <h3 ng-show="ctrl.director.nome">di {{ ctrl.director.nome }}</h3>
+
+<!-- Number of pages -->
 <h4>{{ ctrl.movies.length }} in {{ ctrl.pagination.numPages }} pagin<span ng-if="ctrl.pagination.numPages > 1">e</span><span ng-if="ctrl.pagination.numPages == 1">a</span></h4>
+
+<!-- Search filter -->
 <input type="text" class="form-control" ng-model="filtro" placeholder="Filtra">
 
+<!-- Top pagination buttons -->
 <ul class="pager">
-  <li class="previous" ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.firstPage()">&larr; Prima pagina</a></li>
-  <li class="next" ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.lastPage()">Ultima pagina &rarr;</a></li>
+	<!-- First page -->
+	<li class="previous" ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.firstPage()">&larr; Prima pagina</a></li>
+
+	<!-- Last page -->
+	<li class="next" ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.lastPage()">Ultima pagina &rarr;</a></li>
 </ul>
 
+<!-- Top pagination numbers -->
 <ul class="pagination">
+
+	<!-- Left arrow -->
 	<li ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.prevPage()">&laquo;</a></li>
 
+	<!-- Numbers -->
 	<li ng-repeat="n in [] 
 			| range: ((ctrl.pagination.page > ctrl.pagination.range) ? ctrl.pagination.page - ctrl.pagination.range : 0 ) : 
 			((ctrl.pagination.page < ctrl.pagination.numPages - ctrl.pagination.range) ? ctrl.pagination.page + ctrl.pagination.range : ctrl.pagination.numPages - 1)" 
@@ -18,9 +32,12 @@
 	    <a href="javascript:void(0)" ng-click="ctrl.pagination.toPageId(n)">{{n + 1}}</a>
 	</li>
 
+	<!-- Right arrow -->
 	<li ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.nextPage()">&raquo;</a></li>
 </ul>
 
+
+<!-- Movies table -->
 <table class="table table-hover">
 	<tr>
 		<th>Titolo</th>
@@ -28,9 +45,16 @@
 		<th>&nbsp;</th>
 	</tr>
 	
+	<!-- Rows iteration -->
 	<tr ng-repeat="movie in ctrl.movies | filter: filtro | startFrom: ctrl.pagination.page * ctrl.pagination.perPage | limitTo: ctrl.pagination.perPage">
-		<td><a href="#/movie/{{ movie.id }}">{{ movie.titolo }}</a></td>
+
+		<!-- Movie title -->
+		<td><a href="{{ path('showMovieController', {id: movie.id}) }}">{{ movie.titolo }}</a></td>
+
+		<!-- Movie position -->
 		<td>{{ movie.posizione }}</td>
+
+		<!-- Favourites list dropdown -->
 		<td class="dropdown">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 				Lista
@@ -47,9 +71,13 @@
 	</tr>
 </table>
 
+<!-- Bottom pagination numbers -->
 <ul class="pagination">
+
+	<!-- Left arrow -->
 	<li ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.prevPage()">&laquo;</a></li>
 
+	<!-- Numbers -->
 	<li ng-repeat="n in [] 
 			| range: ((ctrl.pagination.page > ctrl.pagination.range) ? ctrl.pagination.page - ctrl.pagination.range : 0 ) : 
 			((ctrl.pagination.page < ctrl.pagination.numPages - ctrl.pagination.range) ? ctrl.pagination.page + ctrl.pagination.range : ctrl.pagination.numPages - 1)" 
@@ -57,5 +85,6 @@
 	    <a href="javascript:void(0)" ng-click="ctrl.pagination.toPageId(n)">{{n + 1}}</a>
 	</li>
 
+	<!-- Right arrow -->
 	<li ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.nextPage()">&raquo;</a></li>
 </ul>
