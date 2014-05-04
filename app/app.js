@@ -1,7 +1,7 @@
 
 
 		var app = angular.module('movieNetApp', 
-			['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload', 'ng-remote-validator-directive']);
+			['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload', 'ng-remote-validator-directive', 'simplePagination']);
 		
 		app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($routeProvider, $locationProvider, conf){
 

@@ -93,7 +93,7 @@ controllers.homeController = function (){
 };
 
 // Lista film
-controllers.movieController = function ($scope, movieFactory, listaFactory) {
+controllers.movieController = function ($scope, movieFactory, listaFactory, Pagination) {
 
 	var _this = this;
 
@@ -104,7 +104,17 @@ controllers.movieController = function ($scope, movieFactory, listaFactory) {
 	init();
 	
 	function handleSuccess(data, status) {
+
+		_this.pagination = Pagination.getNew();
+		_this.pagination.perPage = 15;
+		_this.pagination.range = 2;
+
 		_this.movies = data;
+
+		console.log(_this.movies.length);
+
+		_this.pagination.numPages = Math.ceil(_this.movies.length/_this.pagination.perPage);
+		console.log(_this.pagination.numPages);		
 	}
 
 	function handleListeSuccess(data, status) {
@@ -112,6 +122,8 @@ controllers.movieController = function ($scope, movieFactory, listaFactory) {
 	}	
 	
 	function init() {
+		
+
 		_this.movies = movieFactory.getMovies();
 
 		_this.liste = listaFactory.getListe();
