@@ -93,13 +93,15 @@ controllers.homeController = function (){
 };
 
 // Lista film
-controllers.movieController = function ($scope, movieFactory, listaFactory, Pagination) {
+controllers.movieController = function ($scope, movieFactory, listaFactory, directorsFactory, Pagination, $routeParams) {
 
 	var _this = this;
 
 	_this.movies = [];
 
 	_this.liste = [];
+
+	_this.director = [];
 
 	init();
 	
@@ -117,11 +119,28 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, Pagi
 	function handleListeSuccess(data, status) {
 		_this.liste = data;
 	}	
+
+	function handleDirectorSuccess(data, status) {
+		_this.director = data;
+	}
 	
 	function init() {
-		
 
-		_this.movies = movieFactory.getMovies();
+		// Param director_id in GET request - filtering movies by director
+		var directorId = $routeParams.director_id ? $routeParams.director_id : 0;
+
+		if (directorId > 0)
+		{
+			// Must filter movies by director
+			movieFactory.getMoviesByDirector(directorId).success(handleSuccess);
+
+			// Get director info
+			directorsFactory.getDirector(directorId).success(handleDirectorSuccess);
+		}
+		else
+		{
+			movieFactory.getMovies().success(handleSuccess);	
+		}
 
 		_this.liste = listaFactory.getListe();
 
@@ -129,8 +148,6 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, Pagi
 			console.log('OK')
 		}
 	}
-	
-	movieFactory.getMovies().success(handleSuccess);
 
 	listaFactory.getListe().success(handleListeSuccess);
 }
@@ -340,5 +357,21 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope, 
 			});
 	} 
 }
+
+controllers.directorsListCtrl = function(directorsFactory) {
+	var _this = this;
+	
+	init();
+	
+	function init() {
+		_this.directors = [];
+
+		directorsFactory.getAll().success(handleSuccess);
+	}
+
+	function handleSuccess(data, status) {
+		_this.directors = data;
+	}
+};
 
 app.controller(controllers);

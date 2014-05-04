@@ -23,6 +23,12 @@
 					templateUrl: baseFolder + '/app/partials/lista.html',
 					controllerAs: 'ctrl'
 				})
+				.when('/movies/byDirector/:director_id',
+				{
+					controller: 'movieController',
+					templateUrl: baseFolder + '/app/partials/lista.html',
+					controllerAs: 'ctrl'
+				})				
 				.when('/movie/:id',
 				{
 					controller: 'showMovieController',
@@ -51,6 +57,12 @@
 				{
 					controller: 'ListController',
 					controllerAs: 'ctrl'
-				})				
+				})
+				.when('/directors',
+				{
+					controller: 'directorsListCtrl',
+					templateUrl: baseFolder + '/app/partials/directors_list.html',
+					controllerAs: 'ctrl'
+				})
 				.otherwise({ redirectTo: '/' });
 		}]);

@@ -19,6 +19,12 @@ app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 	factory.getMovies = function() {
 		return $http.get(conf.root + 'ws/film');
 	};
+
+	// Movies filtered by director
+	factory.getMoviesByDirector = function(id) {
+		return $http.get(conf.root + 'ws/film/byDirector/' + id);
+	};
+
 	
 	// Mostra Un film
 	factory.getMovie = function(id) {
@@ -92,6 +98,22 @@ app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 	return factory;
 }]);
 
+app.factory('directorsFactory', ['$http', 'CONFIGURATION', function($http, conf) {
+	var factory = {}
+	
+	// Get Directors
+	factory.getAll = function() {
+		return $http.get(conf.root + 'ws/directors');
+	};
+
+	// Get director data from ID
+	factory.getDirector = function(id) {
+		return $http.get(conf.root + 'ws/directors/' + id);
+	};
+	
+	return factory;
+}]);
+
 // Modello di factory
 app.factory('emptyFactory', function($http) {
 	var factory = {}
@@ -100,3 +122,4 @@ app.factory('emptyFactory', function($http) {
 	
 	return factory;
 });
+

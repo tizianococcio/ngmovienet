@@ -40,7 +40,26 @@ $app->hook('slim.before', function () use ($app) {
 
 // Test
 $app->get('/', function() use ($app) {
+    echo 'OK - API is well and running.';
+});
+
+$app->get('/util', function() use ($app) {
+	/*
     echo 'OK';
+	$q = "SELECT * FROM movie where id != 879";
+	$st = $app->db->prepare($q);
+	$st->execute();
+	while ($d = $st->fetchObject())
+	{
+		$uq = "UPDATE movie SET trama = :t, cast = :c WHERE id = " . $d->id;
+		$stu = $app->db->prepare($uq);
+		$stu->bindValue(":t", utf8_decode($d->trama), PDO::PARAM_STR);
+		$stu->bindValue(":c", utf8_decode($d->cast), PDO::PARAM_STR);
+		$stu->execute();
+		//echo utf8_decode($d->trama);
+	}
+	echo ' - Done.';
+	 */
 });
 
 // Dettaglio film per mostrare
@@ -127,23 +146,51 @@ function prepareForJSON($s)
 }
 
 // Lista Film
-$app->get('/film', function() use ($app) {
-	$film = array();
+$app->group('/film', function() use ($app) {
 
-	$q = "SELECT id, supporto, tipo_supporto, titolo FROM movie ORDER BY titolo";
-	$st = $app->db->prepare($q);
-	$st->execute();
 
-	while ($d = $st->fetchObject())
-	{
-		$film[] = array(
-					"id" => $d->id, 
-					"posizione" => $d->supporto,
-					"supporto" => $d->tipo_supporto,
-					"titolo" => $d->titolo
-				  );
-	}
-	echo json_encode($film);
+	$app->get('/', function() use ($app) {
+		$film = array();
+
+		$q = "SELECT id, supporto, tipo_supporto, titolo FROM movie ORDER BY titolo";
+		$st = $app->db->prepare($q);
+		$st->execute();
+
+		while ($d = $st->fetchObject())
+		{
+			$film[] = array(
+						"id" => $d->id, 
+						"posizione" => $d->supporto,
+						"supporto" => $d->tipo_supporto,
+						"titolo" => $d->titolo
+					  );
+		}
+		echo json_encode($film);
+	});
+
+
+	// Film per regista
+	$app->get('/byDirector/:id', function($id) use ($app) {
+		$film = array();
+
+		$q = "SELECT id, supporto, tipo_supporto, titolo FROM movie WHERE id_regista = :regista ORDER BY titolo";
+		$st = $app->db->prepare($q);
+		$st->bindValue(":regista", $id, PDO::PARAM_INT);
+		$st->execute();
+
+		while ($d = $st->fetchObject())
+		{
+			$film[] = array(
+						"id" => $d->id, 
+						"posizione" => $d->supporto,
+						"supporto" => $d->tipo_supporto,
+						"titolo" => $d->titolo
+					  );
+		}
+		echo json_encode($film);
+	});
+
+
 });
 
 // Generi
@@ -178,7 +225,7 @@ $app->get('/registi', function () use ($app) {
 	echo json_encode($data);
 });
 
-// inserisce un film
+// Inserisce un film
 $app->post('/film', function() use ($app) {
 	$tabella = "movie";
 	$film = json_decode($app->request()->getBody(), true);
@@ -404,6 +451,7 @@ $app->group('/liste', function() use ($app){
 	});
 });
 
+// Check if movie exists
 $app->post('/check-if-movie-exists', function() use ($app) {
 	$dati = json_decode($app->request()->getBody(), true);
 
@@ -418,6 +466,40 @@ $app->post('/check-if-movie-exists', function() use ($app) {
 	}
 
 	echo json_encode($return);
+});
+
+// Directors
+$app->group('/directors', function() use ($app){
+
+	$app->get('/', function() use ($app){
+
+		$st = $app->db->prepare("SELECT * FROM Director ORDER BY name");
+		$st->execute();
+		
+		$data = array();
+		while ($d = $st->fetchObject())
+		{
+			$data[] = array('id' => $d->id, 'nome' => $d->name);
+		}
+		
+		echo json_encode($data);		
+	});
+
+	$app->get('/:id', function($id) use ($app){
+
+		$st = $app->db->prepare("SELECT * FROM Director WHERE id = :id ORDER BY name");
+		$st->bindValue(":id", $id, PDO::PARAM_INT);
+		$st->execute();
+		
+		$data = array();
+		while ($d = $st->fetchObject())
+		{
+			$data = array('id' => $d->id, 'nome' => $d->name);
+		}
+		
+		echo json_encode($data);		
+	});	
+
 });
 
 

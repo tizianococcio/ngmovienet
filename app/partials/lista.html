@@ -1,5 +1,6 @@
 <h1>Film</h1>
-<h4>{{ ctrl.movies.length }} in {{ ctrl.pagination.numPages }} pagine</h4>
+<h3 ng-show="ctrl.director.nome">di {{ ctrl.director.nome }}</h3>
+<h4>{{ ctrl.movies.length }} in {{ ctrl.pagination.numPages }} pagin<span ng-if="ctrl.pagination.numPages > 1">e</span><span ng-if="ctrl.pagination.numPages == 1">a</span></h4>
 <input type="text" class="form-control" ng-model="filtro" placeholder="Filtra">
 
 <ul class="pager">
