@@ -111,10 +111,7 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, Pagi
 
 		_this.movies = data;
 
-		console.log(_this.movies.length);
-
 		_this.pagination.numPages = Math.ceil(_this.movies.length/_this.pagination.perPage);
-		console.log(_this.pagination.numPages);		
 	}
 
 	function handleListeSuccess(data, status) {
@@ -136,7 +133,6 @@ controllers.movieController = function ($scope, movieFactory, listaFactory, Pagi
 	movieFactory.getMovies().success(handleSuccess);
 
 	listaFactory.getListe().success(handleListeSuccess);
-	
 }
 
 // mostra

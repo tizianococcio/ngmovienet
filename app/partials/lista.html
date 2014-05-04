@@ -3,13 +3,11 @@
 <input type="text" class="form-control" ng-model="filtro" placeholder="Filtra">
 
 <ul class="pager">
-  <li class="previous"><a href="javascript:void(0)" ng-click="ctrl.pagination.firstPage()">&larr; Prima pagina</a></li>
-  <li class="next"><a href="javascript:void(0)" ng-click="ctrl.pagination.lastPage()">Ultima pagina &rarr;</a></li>
+  <li class="previous" ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.firstPage()">&larr; Prima pagina</a></li>
+  <li class="next" ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.lastPage()">Ultima pagina &rarr;</a></li>
 </ul>
 
-<ul class="pagination pagination-lg">
-	
-
+<ul class="pagination">
 	<li ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.prevPage()">&laquo;</a></li>
 
 	<li ng-repeat="n in [] 
@@ -18,7 +16,6 @@
 			ng-class="{active: n == ctrl.pagination.page}">
 	    <a href="javascript:void(0)" ng-click="ctrl.pagination.toPageId(n)">{{n + 1}}</a>
 	</li>
-	
 
 	<li ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.nextPage()">&raquo;</a></li>
 </ul>
@@ -45,3 +42,15 @@
 	</tr>
 </table>
 
+<ul class="pagination">
+	<li ng-class="{disabled: ctrl.pagination.page == 0}"><a href="javascript:void(0)" ng-click="ctrl.pagination.prevPage()">&laquo;</a></li>
+
+	<li ng-repeat="n in [] 
+			| range: ((ctrl.pagination.page > ctrl.pagination.range) ? ctrl.pagination.page - ctrl.pagination.range : 0 ) : 
+			((ctrl.pagination.page < ctrl.pagination.numPages - ctrl.pagination.range) ? ctrl.pagination.page + ctrl.pagination.range : ctrl.pagination.numPages - 1)" 
+			ng-class="{active: n == ctrl.pagination.page}">
+	    <a href="javascript:void(0)" ng-click="ctrl.pagination.toPageId(n)">{{n + 1}}</a>
+	</li>
+
+	<li ng-class="{disabled: ctrl.pagination.page == ctrl.pagination.numPages - 1}"><a href="javascript:void(0)" ng-click="ctrl.pagination.nextPage()">&raquo;</a></li>
+</ul>

@@ -1,5 +1,3 @@
-
-
 		var app = angular.module('movieNetApp', 
 			['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload', 'ng-remote-validator-directive', 'simplePagination']);
 		
