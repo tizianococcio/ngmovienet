@@ -14,6 +14,11 @@ app.factory('simpleFactory', function() {
 app.factory('movieFactory', ['$http', 'CONFIGURATION', function($http, conf) {
 
 	var factory = {};
+
+	// Get last numeric support id
+	factory.getLastNumericSupport = function() {
+		return $http.get(conf.root + 'ws/film/get-last-numeric-support');
+	}
 	
 	// Tutti i film
 	factory.getMovies = function() {

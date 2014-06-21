@@ -57,6 +57,7 @@
         id="inputSupporto" 
         ng-model="ctrl.movie.posizione" 
         placeholder="Supporto" required>
+      <a href="javascript:void(0)" ng-click="ctrl.getLastNumericSupport()">Prossimo supporto disponibile</a>
       <p ng-show="ctrl.nuovofilm_form.posizione.$invalid && !ctrl.nuovofilm_form.posizione.$pristine && !ctrl.submitStatus" class="help-block">Inserire il supporto.</p>
     </div>
   </div>

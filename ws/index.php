@@ -62,6 +62,16 @@ $app->get('/util', function() use ($app) {
 	 */
 });
 
+$app->get('/film/get-last-numeric-support', function() use ($app) {
+	$data = array();
+
+	$q = "SELECT COALESCE(MAX(CAST(supporto AS unsigned)), 0) AS supporto FROM movie WHERE supporto REGEXP '^-?[0-9]+$'";
+	$st = $app->db->prepare($q);
+	$st->execute();
+	$data = array('last_numeric_support' => $st->fetchObject()->supporto + 1);
+	echo json_encode($data);
+});
+
 // Dettaglio film per mostrare
 $app->get('/film/:id', function($id) use ($app) {
 	$url_locandina = "http://tiziano.patriziatrevisiartgallery.it/archivio-film/data/immagini/locandine/";

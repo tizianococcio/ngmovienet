@@ -363,7 +363,8 @@ controllers.detailsMovieController = function ($routeParams, $fileUploader, $sco
 			'year-format': "'yy'",
 			'starting-day': 1,
 			'show-button-bar' : false,
-		};		
+		};
+
 	}
 
 	_this.salva = function() {
@@ -387,11 +388,15 @@ controllers.detailsMovieController = function ($routeParams, $fileUploader, $sco
 controllers.newMovieController = function (movieFactory, $fileUploader, $scope, CONFIGURATION) {
 
 	var _this = this;
+	
+	// init model
+	_this.movie = {posizione: ""};
 
 	init();
 	
 	function init()
-	{ 
+	{
+
 
 		// Form submit status
 		_this.submitStatus = false;
@@ -446,8 +451,9 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope, 
 		};
 	
 	}
+
 	_this.salva = function() {
-		
+
 		_this.movie.data = new Date(_this.movie.data).yyyymmdd();
 		movieFactory
 			.setMovie(_this.movie)
@@ -464,7 +470,15 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope, 
 					_this.submitStatus = false;
 				}
 			});
-	} 
+	};
+	
+	// get last numeric support
+	_this.getLastNumericSupport = function() {
+		var request = movieFactory.getLastNumericSupport();
+		request.success(function(data, status, headers, config) {
+			_this.movie.posizione = data.last_numeric_support;
+		});
+	};	
 }
 
 controllers.directorsListCtrl = function(directorsFactory) {
