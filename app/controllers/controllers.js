@@ -37,7 +37,7 @@ controllers.newListController = function (listaFactory){
 	
 	init();
 	
-	function init() {	
+	function init() {
 
 		// Form submit status
 		_this.submitStatus = false;
@@ -385,19 +385,18 @@ controllers.detailsMovieController = function ($routeParams, $fileUploader, $sco
 }
 
 // inserimento
-controllers.newMovieController = function (movieFactory, $fileUploader, $scope, CONFIGURATION) {
+controllers.newMovieController = function (movieFactory, $fileUploader, $scope, CONFIGURATION, $location, $anchorScroll) {
 
 	var _this = this;
 	
 	// init model
-	_this.movie = {posizione: ""};
+	var blank_model = {posizione: ""};
+	_this.movie = blank_model;
 
 	init();
 	
 	function init()
 	{
-
-
 		// Form submit status
 		_this.submitStatus = false;
 
@@ -453,21 +452,24 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope, 
 	}
 
 	_this.salva = function() {
-
+		
 		_this.movie.data = new Date(_this.movie.data).yyyymmdd();
+		
 		movieFactory
 			.setMovie(_this.movie)
 			.success(function(data) {
 				if (data.status === 'ok')
 				{
 					_this.messaggio = 'Nuovo film salvato.';
-					_this.movie = [];
+					_this.movie = {posizione: ""};
 					_this.submitStatus = true;
+				    //$location.hash('success');
 				}
 				else 
 				{
 					_this.messaggio = 'Ah! Errore!';	
 					_this.submitStatus = false;
+				    //$location.hash('success');
 				}
 			});
 	};
