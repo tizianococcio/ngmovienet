@@ -1,5 +1,5 @@
 var app = angular.module('movieNetApp', 
-	['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload', 'ng-remote-validator-directive', 'simplePagination']);
+	['ngRoute', 'ui.bootstrap', 'configuration', 'angularFileUpload', 'ng-remote-validator-directive', 'simplePagination', 'ui.bootstrap.datetimepicker']);
 
 app.config(['$routeProvider', '$locationProvider', 'CONFIGURATION', function($routeProvider, $locationProvider, conf){
 

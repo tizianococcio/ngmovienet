@@ -1,6 +1,31 @@
 <h1>Test page</h1>
-<div class='content' ng-file-drop>
+    <div class="row">
+        <div class="col-sm-6">
+            <h3>Drop-down Datetime with input box</h3>
 
-    
+            <p><code>dropdownSelector: '#dropdown2'</code> to toggle the dropdown.</p>
 
-</div>
+            <div class="well">
+                <p>Formatted Date: {{ data.inputCalendar | date:'medium' }}</p>
+                <p>Raw Date: {{ data.inputCalendar | date:'yyyy'}}</p>
+                <p>Data: {{ data.testData }}</p>
+
+                <div class="dropdown">
+                    <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#"
+                       href="javascript:void(0)">
+                        <div class="input-group">
+                            <input type="text" class="form-control" data-ng-model="data.dateDropDownInput">
+                            <input type="text" class="form-control" data-ng-model="data.testData">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <datetimepicker data-ng-model="data.inputCalendar"
+                                        data-datetimepicker-config="{ dropdownSelector: '#dropdown2', 
+                                        startView: 'year', 
+                                        minView: 'year' }"></datetimepicker>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>

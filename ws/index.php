@@ -78,11 +78,25 @@ $app->get('/film/:id', function($id) use ($app) {
 
 	$film = array();
 
-	$q = "SELECT f.*, r.name AS regista, g.name AS genere 
-			FROM movie f
-			LEFT JOIN Genre g ON f.id_genere = g.id
-			LEFT JOIN Director r ON f.id_regista = r.id 
-			WHERE f.id = :id";
+	$q = "SELECT 
+				f.id, 
+				f.supporto,
+				f.tipo_supporto,
+				f.titolo,
+				f.titolo_originale,
+				f.sottotitolo,
+				f.cast,
+				DATE(f.data_uscita) AS data_uscita,
+				f.locandina,
+				f.trama,
+				f.durata,
+				r.name AS regista, 
+				g.name AS genere 
+				FROM movie f
+				LEFT JOIN Genre g ON f.id_genere = g.id
+				LEFT JOIN Director r ON f.id_regista = r.id 
+				WHERE f.id = :id";
+
 	$st = $app->db->prepare($q);
 	$st->bindValue(":id", $id, PDO::PARAM_INT);
 	if ($st->execute())
@@ -116,11 +130,25 @@ $app->get('/film-edit-data/:id', function($id) use ($app) {
 
 	$film = array();
 
-	$q = "SELECT f.*, r.name AS regista, g.name AS genere 
-			FROM movie f
-			LEFT JOIN Genre g ON f.id_genere = g.id
-			LEFT JOIN Director r ON f.id_regista = r.id 
-			WHERE f.id = :id";
+	$q = "SELECT 
+				f.id, 
+				f.supporto,
+				f.tipo_supporto,
+				f.titolo,
+				f.titolo_originale,
+				f.sottotitolo,
+				f.cast,
+				DATE(f.data_uscita) AS data_uscita,
+				f.locandina,
+				f.trama,
+				f.durata,
+				r.name AS regista, 
+				g.name AS genere 
+				FROM movie f
+				LEFT JOIN Genre g ON f.id_genere = g.id
+				LEFT JOIN Director r ON f.id_regista = r.id 
+				WHERE f.id = :id";
+
 	$st = $app->db->prepare($q);
 	$st->bindValue(":id", $id, PDO::PARAM_INT);
 	if ($st->execute())

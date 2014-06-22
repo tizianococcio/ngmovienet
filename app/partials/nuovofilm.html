@@ -90,9 +90,8 @@
     </div>
   </div>
     
-  <div class="form-group">
+  <!--div class="form-group">
     <label for="inputDataUscita" class="col-sm-2 control-label">* Data uscita</label>
-    <!--http://angular-ui.github.io/bootstrap/#/datepicker-->
     <p class="input-group form-date-field">
       <input type="text" class="form-control" 
         datepicker-mode="year" 
@@ -113,6 +112,25 @@
       </span>
       <p ng-show="ctrl.nuovofilm_form.data.$invalid && !ctrl.nuovofilm_form.data.$pristine && !ctrl.submitStatus" class="help-block">Scegliere una data.</p>
     </p>
+  </div-->
+
+  <div class="form-group">
+    <label for="inputDataUscita" class="col-sm-2 control-label">* Data uscita</label>
+    <div class="col-sm-10">
+        <div class="dropdown">
+            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#"
+               href="javascript:void(0)">
+                <div class="input-group">
+                  <input type="text" class="form-control" value="{{ ctrl.movie.data | date: 'yyyy' }}" id="inputCast" placeholder="Data" name="data" ng-maxlength="4">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+            </a>
+
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <datetimepicker ng-model="ctrl.movie.data" datetimepicker-config="{ dropdownSelector: '#dropdown2', startView: 'year', minView: 'year' }"></datetimepicker>
+            </ul>
+        </div>      
+    </div>
   </div>
 
   <div class="form-group">
