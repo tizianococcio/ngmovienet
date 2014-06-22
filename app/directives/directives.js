@@ -1,46 +1,5 @@
 'use strict';
 
-angular.module('movieNetApp').directive('ngCustomDate', function(uppercaseFilter) {
-   return {
-     require: 'ngModel',
-     link: function(scope, element, attrs, modelCtrl) {
-        var capitalize = function(inputValue) {
-            console.log(inputValue);
-           var capitalized = inputValue.charAt(0).toUpperCase() +
-               inputValue.substring(1);
-           if(capitalized !== inputValue) {
-              modelCtrl.$setViewValue(capitalized);
-              modelCtrl.$render();
-            }         
-            return capitalized;
-         }
-         modelCtrl.$parsers.push(capitalize);
-         capitalize(scope[attrs.ngModel]);
-     }
-   };
-});
-
-
-angular.module('movieNetApp').directive('ngCustomDateTwo', function(){
-    return {
-      require: 'ngModel',
-      link: function(scope, element, attrs, ngModelController) {
-
-
-        ngModelController.$parsers.push(function(data) {
-            console.log(data);
-          //convert data from view format to model format
-          return data; //converted
-        });
-
-        ngModelController.$formatters.push(function(data) {
-          //convert data from model format to view format
-          return data; //converted
-        });
-      }
-    }    
-});
-
 angular
 
 

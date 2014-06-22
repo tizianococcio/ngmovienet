@@ -397,6 +397,15 @@ controllers.newMovieController = function (movieFactory, $fileUploader, $scope, 
 	
 	function init()
 	{
+
+		// Check on page unload to make sure you are really changing page
+		$scope.$on('$locationChangeStart', function(event) {
+			var ret = confirm("Are you serious?!");
+			if (!ret) {
+				event.preventDefault();
+			}
+      });
+
 		// Form submit status
 		_this.submitStatus = false;
 
